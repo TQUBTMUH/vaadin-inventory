@@ -4,7 +4,6 @@ import com.niafikra.inventory.backend.entity.Item;
 import com.niafikra.inventory.backend.entity.Stock;
 import com.niafikra.inventory.backend.service.ItemService;
 import com.niafikra.inventory.backend.service.StockService;
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -12,6 +11,7 @@ import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.router.Route;
@@ -22,16 +22,17 @@ public class ItemForm extends FormLayout {
     private ItemService itemService;
     private StockService stockService;
 
-    TextField code = new TextField();
+    TextField code;
     TextField name = new TextField();
 
     Button save = new Button("Save");
 
-    Binder<Item> binder = new Binder<>(Item.class);
+    Binder<Item> binder = new BeanValidationBinder<>(Item.class);
 
     public ItemForm(ItemService itemService, StockService stockService) {
         this.itemService = itemService;
         this.stockService = stockService;
+        code = new TextField();
 
         addClassName("centered-content");
 
