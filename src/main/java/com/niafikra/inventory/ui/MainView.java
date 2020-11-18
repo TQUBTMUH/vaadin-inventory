@@ -84,29 +84,37 @@ public class MainView extends VerticalLayout {
         stockGrid.addComponentColumn(this::deleteButton).setHeader("Delete");
     }
 
+//    private Button deleteButton(Stock stock) {
+//        delete = new Button(new Icon(VaadinIcon.CLOSE));
+//
+//        delete.addClickListener(e -> {
+//            Dialog alert = new Dialog();
+//            alert.setCloseOnEsc(false);
+//            alert.setCloseOnOutsideClick(false);
+//            Text confirm = new Text("Are you sure you want to alert this stock");
+//            Button confirmButton = new Button("Yes", yes -> {
+//                Stock selectedStock = stockGrid.asSingleSelect().getValue();
+//                deleteStock(selectedStock.getId());
+//                alert.close();
+//            });
+//
+//            Button denyButton = new Button("No", no -> {
+//                alert.close();
+//            });
+//
+//            HorizontalLayout buttons = new HorizontalLayout(confirmButton, denyButton);
+//            VerticalLayout layout = new VerticalLayout(confirm, buttons);
+//
+//            alert.add(layout);
+//            add(alert);
+//        });
+//
+//        return delete;
+//    }
+
     private Button deleteButton(Stock stock) {
-        delete = new Button(new Icon(VaadinIcon.CLOSE));
-
         delete.addClickListener(e -> {
-            Dialog alert = new Dialog();
-            alert.setCloseOnEsc(false);
-            alert.setCloseOnOutsideClick(false);
-            Text confirm = new Text("Are you sure you want to alert this stock");
-            Button confirmButton = new Button("Yes", yes -> {
-                Stock selectedStock = stockGrid.asSingleSelect().getValue();
-                deleteStock(selectedStock.getId());
-                alert.close();
-            });
-
-            Button denyButton = new Button("No", no -> {
-                alert.close();
-            });
-
-            HorizontalLayout buttons = new HorizontalLayout(confirmButton, denyButton);
-            VerticalLayout layout = new VerticalLayout(confirm, buttons);
-
-            alert.add(layout);
-            add(alert);
+            stockService.deleteById(stockGrid.asSingleSelect().getValue().getId());
         });
 
         return delete;
