@@ -2,9 +2,10 @@ package com.niafikra.inventory.backend.entity;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
-import java.sql.Date;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.util.List;
+
 
 @Entity
 @Table(name = "purchase_order")
@@ -14,27 +15,41 @@ public class PurchaseOrder {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+//    @NotNull
     private LocalDate orderDate;
 
     @ManyToOne
+    @NotNull
+//    @NotBlank
     private Supplier supplier;
 
-    @ManyToMany
-    private List<Item> item;
+    @ManyToOne
+    @NotNull
+//    @NotBlank
+    private Item item;
 
-    @Min(value = 1, message = "required more than 1")
+//    @Min(value = 1, message = "required more than 1")
+    @NotNull
+//    @NotBlank
     private int quantity;
 
-    public PurchaseOrder(LocalDate orderDate, Supplier supplier,
-                         List<Item> item,
-                         @Min(value = 1, message = "required more than 1") int quantity) {
+
+    public PurchaseOrder() {
+    }
+
+    public PurchaseOrder(LocalDate orderDate, Supplier supplier, Item item, int quantity) {
         this.orderDate = orderDate;
         this.supplier = supplier;
         this.item = item;
         this.quantity = quantity;
     }
 
-    public PurchaseOrder() {
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public LocalDate getOrderDate() {
@@ -53,20 +68,12 @@ public class PurchaseOrder {
         this.supplier = supplier;
     }
 
-    public List<Item> getItem() {
+    public Item getItem() {
         return item;
     }
 
-    public void setItem(List<Item> item) {
+    public void setItem(Item item) {
         this.item = item;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public int getQuantity() {
@@ -78,7 +85,6 @@ public class PurchaseOrder {
     }
 
     // to string
-
     @Override
     public String toString() {
         return "PurchaseOrder{" +

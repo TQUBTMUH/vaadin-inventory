@@ -35,7 +35,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class MainView extends VerticalLayout {
 
     Grid<Stock> stockGrid = new Grid<>(Stock.class);
-    Button delete;
 
     private StockService stockService;
 
@@ -63,12 +62,6 @@ public class MainView extends VerticalLayout {
         updateList();
     }
 
-//    private void createLinks() {
-        // For newOrder
-//        String newOrderLink = UI.getCurrent().getRouter().getUrl(OrderForm.class);
-//        newOrder = new Anchor(newOrderLink, "New Order");
-//    }
-
     private void configureStockGrid() {
         stockGrid.addThemeVariants(GridVariant.LUMO_NO_BORDER,
                 GridVariant.LUMO_ROW_STRIPES, GridVariant.LUMO_NO_ROW_BORDERS);
@@ -81,65 +74,33 @@ public class MainView extends VerticalLayout {
         }).setHeader("Item Name");
 
 
-        stockGrid.addComponentColumn(this::deleteButton).setHeader("Delete");
+        // Delete button configuration
+        stockGrid.addComponentColumn(stock -> {
+            Button deleteBtn = new Button(new Icon(VaadinIcon.CLOSE));
+            deleteBtn.addClickListener(event -> {
+                Dialog alert = new Dialog();
+                alert.setCloseOnEsc(false);
+                alert.setCloseOnOutsideClick(false);
+                Text confirm = new Text("Are you sure you want to alert this stock");
+                Button confirmButton = new Button("Yes", yes -> {
+                    deleteStock(stock.getId());
+                    alert.close();
+                });
+
+                Button denyButton = new Button("No", no -> {
+                    alert.close();
+                });
+
+                HorizontalLayout buttons = new HorizontalLayout(confirmButton, denyButton);
+                VerticalLayout layout = new VerticalLayout(confirm, buttons);
+
+                alert.add(layout);
+                alert.open();
+            });
+
+            return deleteBtn;
+        }).setHeader("Delete");
     }
-
-//    private Button deleteButton(Stock stock) {
-//        delete = new Button(new Icon(VaadinIcon.CLOSE));
-//
-//        delete.addClickListener(e -> {
-//            Dialog alert = new Dialog();
-//            alert.setCloseOnEsc(false);
-//            alert.setCloseOnOutsideClick(false);
-//            Text confirm = new Text("Are you sure you want to alert this stock");
-//            Button confirmButton = new Button("Yes", yes -> {
-//                Stock selectedStock = stockGrid.asSingleSelect().getValue();
-//                deleteStock(selectedStock.getId());
-//                alert.close();
-//            });
-//
-//            Button denyButton = new Button("No", no -> {
-//                alert.close();
-//            });
-//
-//            HorizontalLayout buttons = new HorizontalLayout(confirmButton, denyButton);
-//            VerticalLayout layout = new VerticalLayout(confirm, buttons);
-//
-//            alert.add(layout);
-//            add(alert);
-//        });
-//
-//        return delete;
-//    }
-
-    private Button deleteButton(Stock stock) {
-        delete.addClickListener(e -> {
-            stockService.deleteById(stockGrid.asSingleSelect().getValue().getId());
-        });
-
-        return delete;
-    }
-
-//    private void createDialogAndDelete(Long id) {
-//        Dialog alert = new Dialog();
-//        alert.setCloseOnEsc(false);
-//        alert.setCloseOnOutsideClick(false);
-//        Text confirm = new Text("Are you sure you want to alert this stock");
-//        Button confirmButton = new Button("Yes", e -> {
-//            deleteStock(id);
-//            alert.close();
-//        });
-//
-//        Button denyButton = new Button("No", e -> {
-//            alert.close();
-//        });
-//
-//        HorizontalLayout buttons = new HorizontalLayout(confirmButton, denyButton);
-//        VerticalLayout layout = new VerticalLayout(confirm, buttons);
-//
-//        alert.add(layout);
-//        add(alert);
-//    }
 
     // update stock list
     private void updateList() {

@@ -2,6 +2,7 @@ package com.niafikra.inventory.backend.service;
 
 import com.niafikra.inventory.backend.dao.PurchaseOrderRepository;
 import com.niafikra.inventory.backend.dao.StockRepository;
+import com.niafikra.inventory.backend.entity.Item;
 import com.niafikra.inventory.backend.entity.PurchaseOrder;
 import com.niafikra.inventory.backend.entity.Stock;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,9 +45,12 @@ public class StockServiceImp implements StockService {
         // get the item in PO with given Id
         myPurchaserOrder = purchaseOrderRepository.getOne(theId);
 
-        // find stock record using item Id in Item database
-        Long foundItemId = purchaseOrderRepository.findByItemId(myPurchaserOrder.getId());
-        Stock myStock = stockRepository.findByItem_Id(foundItemId);
+        // find stock record using item Id
+        Item foundItem = myPurchaserOrder.getItem();
+        Stock myStock = stockRepository.findByItem_Id(foundItem.getId());
+
+//        Long foundItemId = purchaseOrderRepository.findByItemId(myPurchaserOrder.getId());
+//        Stock myStock = stockRepository.findByItem_Id(foundItemId);
 
         // get stock item's ID
         int myStockQuantity = myStock.getQuantity();

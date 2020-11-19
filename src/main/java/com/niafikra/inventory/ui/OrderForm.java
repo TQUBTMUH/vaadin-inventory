@@ -6,9 +6,6 @@ import com.niafikra.inventory.backend.entity.Supplier;
 import com.niafikra.inventory.backend.service.ItemService;
 import com.niafikra.inventory.backend.service.PurchaseOrderService;
 import com.niafikra.inventory.backend.service.SupplierService;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.ComponentEvent;
-import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -25,28 +22,23 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
-import com.vaadin.flow.shared.Registration;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Route("order-form")
 public class OrderForm extends FormLayout {
 
     private SupplierService supplierService;
-    private final PurchaseOrderService purchaseOrderService;
+    private PurchaseOrderService purchaseOrderService;
     private ItemService itemService;
 
     // Global components and properties
     DatePicker orderDate = new DatePicker("Order Date");
-    ComboBox<Supplier> suppliers = new ComboBox<>();
-    ComboBox<Item> items = new ComboBox<>();
+    Select<Supplier> supplier = new Select<>();
+    Select<Item> items = new Select<>();
     IntegerField quantity = new IntegerField("Quantity");
 
-
-    Button save = new Button("Save");
-    Binder<PurchaseOrder> binder = new Binder<>(PurchaseOrder.class);
+    Binder<PurchaseOrder> binder = new BeanValidationBinder<>(PurchaseOrder.class);
 
     public OrderForm(SupplierService supplierService, ItemService itemService,
                      PurchaseOrderService purchaseOrderService) {
@@ -59,12 +51,11 @@ public class OrderForm extends FormLayout {
 
         // DatePicker
 
-
         // Supplier combobox
-        suppliers.setLabel("Supplier");
+        supplier.setLabel("Supplier");
         List<Supplier> suppliersList = supplierService.findAll();
-        suppliers.setItemLabelGenerator(Supplier::getName);
-        suppliers.setItems(suppliersList);
+        supplier.setItemLabelGenerator(Supplier::getName);
+        supplier.setItems(suppliersList);
 
         // Items
         items.setLabel("Item Name");
@@ -74,10 +65,13 @@ public class OrderForm extends FormLayout {
 
         // Quantity
 
+
         // Binder
         binder.bindInstanceFields(this);
 
+
         // save button configuration
+        Button save = new Button("Save");
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         save.addClickShortcut(Key.ENTER);
 
@@ -89,6 +83,7 @@ public class OrderForm extends FormLayout {
                 // Run validators and write the values to the bean
                 binder.writeBean(newPurchaseOrder);
 
+
                 // call backend to store
                 purchaseOrderService.save(newPurchaseOrder);
 
@@ -99,6 +94,8 @@ public class OrderForm extends FormLayout {
                 clearFormFields();
 
             } catch (ValidationException e) {
+                // create custom validation
+
                 e.printStackTrace();
             }
         });
@@ -110,44 +107,17 @@ public class OrderForm extends FormLayout {
 
         // Links
         RouterLink stockList = new RouterLink("Back to stock", MainView.class);
+        RouterLink newSupplier = new RouterLink("New Supplier", SupplierForm.class);
+
         Div link = new Div(stockList);
 
-        add(header, orderDate, suppliers, items, quantity, save, link);
+        add(header, newSupplier, orderDate, supplier, items, quantity, save, link);
+
     }
 
     private void clearFormFields() {
         binder.readBean(null);
     }
-
-//    private Component createButtonLayout() {
-//        save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-//        save.addClickShortcut(Key.ENTER);
-//        binder.addStatusChangeListener(event -> save.setEnabled(binder.isValid()));
-//
-//        // Save Event
-//        save.addClickListener(click -> {
-//            try {
-//                // create empty bean to store the order
-//                PurchaseOrder newPurchaseOrder = new PurchaseOrder();
-//
-//                // Run validators and write the values to the bean
-//                binder.writeBean(newPurchaseOrder);
-//
-//                // call backend to store
-//                purchaseOrderService.save(newPurchaseOrder);
-//
-//                // show success notification
-//
-//
-//                // clear form fields
-//
-//            } catch (ValidationException e) {
-//                e.printStackTrace();
-//            }
-//        });
-//
-//        return save;
-//    }
 
 
 }

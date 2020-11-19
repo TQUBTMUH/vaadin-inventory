@@ -12,6 +12,7 @@ import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.router.Route;
@@ -27,7 +28,7 @@ public class ItemForm extends FormLayout {
 
     Button save = new Button("Save");
 
-    Binder<Item> binder = new Binder<>(Item.class);
+    Binder<Item> binder = new BeanValidationBinder<>(Item.class);
 
     public ItemForm(ItemService itemService, StockService stockService) {
         this.itemService = itemService;
@@ -44,7 +45,6 @@ public class ItemForm extends FormLayout {
         // Button configuration
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         save.addClickShortcut(Key.ENTER);
-        binder.addStatusChangeListener(event -> save.setEnabled(binder.isValid()));
 
         save.addClickListener(click -> {
             try {
@@ -73,43 +73,19 @@ public class ItemForm extends FormLayout {
                 e.printStackTrace();
             }
         });
+        binder.addStatusChangeListener(event -> save.setEnabled(binder.isValid()));
+
+        binder.bindInstanceFields(this);
+
 
         // Header
         Div header = new Div(new H3("Create new item"));
 
         add(header, code, name, save);
-
-        binder.bindInstanceFields(this);
     }
 
     private void clearFields() {
         binder.readBean(null);
     }
 
-//    private void setItem(Item item) {
-//        this.item = item;
-//        binder.readBean(item);
-//    }
-
-//    private Component createButtonLayout() {
-//        save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-//        save.addClickShortcut(Key.ENTER);
-//        binder.addStatusChangeListener(event -> save.setEnabled(binder.isValid()));
-//
-//        save.addClickListener(click -> {
-//            try {
-//                // Create empty bean to store item details
-//                Item itemBean = new Item();
-//
-//                // Run validators and write the values to the bean
-//                binder.writeBean(itemBean);
-//
-//                itemService.save(item);
-//            } catch (ValidationException e) {
-//                e.printStackTrace();
-//            }
-//        });
-//
-//        return save;
-//    }
 }

@@ -10,6 +10,7 @@ import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.router.Route;
@@ -24,7 +25,7 @@ public class SupplierForm extends FormLayout {
 
     TextField name = new TextField();
 
-    Binder<Supplier> binder = new Binder<>(Supplier.class);
+    Binder<Supplier> binder = new BeanValidationBinder<>(Supplier.class);
 
     public SupplierForm(@Autowired SupplierService supplierService) {
         this.supplierService = supplierService;
@@ -37,6 +38,8 @@ public class SupplierForm extends FormLayout {
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         save.addClickShortcut(Key.ENTER);
 
+        binder.addStatusChangeListener(event -> save.setEnabled(binder.isValid()));
+
         save.addClickListener(click -> {
             try {
                 // Create empty bean to store the new Supplier into
@@ -48,7 +51,10 @@ public class SupplierForm extends FormLayout {
                 // Call backend to store data
                 supplierService.save(newSupplier);
 
-                // Notification and Clear Bean
+                // Notification
+
+                // clear fields
+                clearFields();
 
             } catch (ValidationException e) {
                 e.printStackTrace();
@@ -64,30 +70,8 @@ public class SupplierForm extends FormLayout {
         binder.bindInstanceFields(this);
     }
 
-//    public void setItem(Supplier supplier) {
-//        this.supplier = supplier;
-//        binder.readBean(supplier);
-//    }
+    private void clearFields() {
+        binder.readBean(null);
+    }
 
-//    private Component createButtonLayout() {
-//        save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-//        save.addClickShortcut(Key.ENTER);
-//
-//        save.addClickListener(click -> {
-//            try {
-//                // Create empty bean to store the new Supplier into
-//                Supplier newSupplier = new Supplier();
-//
-//                // Run validators and write the values to the bean
-//                binder.writeBean(newSupplier);
-//
-//                // Call backend to store data
-//                supplierService.save(newSupplier);
-//            } catch (ValidationException e) {
-//                e.printStackTrace();
-//            }
-//        });
-//
-//        return save;
-//    }
 }

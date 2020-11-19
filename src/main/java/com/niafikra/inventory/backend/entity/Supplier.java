@@ -2,7 +2,6 @@ package com.niafikra.inventory.backend.entity;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -13,9 +12,8 @@ public class Supplier {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-//    @NotBlank(message = "*required")
     @NotNull
-    @NotEmpty
+    @NotBlank(message = "*required")
     private String name;
 
     public Supplier() {
