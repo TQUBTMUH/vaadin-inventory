@@ -5,6 +5,7 @@ import com.niafikra.inventory.backend.entity.PurchaseOrder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PurchaseOrderServiceImp implements PurchaseOrderService {
@@ -31,8 +32,8 @@ public class PurchaseOrderServiceImp implements PurchaseOrderService {
     }
 
     @Override
-    public PurchaseOrder findById(Long theId) {
-        return purchaseOrderRepository.getOne(theId);
+    public Optional<PurchaseOrder> findById(Long theId) {
+        return purchaseOrderRepository.findById(theId);
     }
 
 }

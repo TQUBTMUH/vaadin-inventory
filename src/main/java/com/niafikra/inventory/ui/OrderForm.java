@@ -19,6 +19,7 @@ import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 
+import com.vaadin.flow.data.binder.PropertyId;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
@@ -35,6 +36,8 @@ public class OrderForm extends FormLayout {
     // Global components and properties
     DatePicker orderDate = new DatePicker("Order Date");
     Select<Supplier> supplier = new Select<>();
+
+    @PropertyId("item")
     Select<Item> items = new Select<>();
     IntegerField quantity = new IntegerField("Quantity");
 

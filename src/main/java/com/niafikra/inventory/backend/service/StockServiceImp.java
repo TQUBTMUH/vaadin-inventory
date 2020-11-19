@@ -43,24 +43,33 @@ public class StockServiceImp implements StockService {
     @Override
     public void customeStockUpdate(Long theId) {
         // get the item in PO with given Id
-        myPurchaserOrder = purchaseOrderRepository.getOne(theId);
+
+        // U MAY USE .orElse() instead of .get()
+        myPurchaserOrder = purchaseOrderRepository.findById(theId).get();
 
         // find stock record using item Id
         Item foundItem = myPurchaserOrder.getItem();
         Stock myStock = stockRepository.findByItem_Id(foundItem.getId());
 
+
 //        Long foundItemId = purchaseOrderRepository.findByItemId(myPurchaserOrder.getId());
 //        Stock myStock = stockRepository.findByItem_Id(foundItemId);
 
-        // get stock item's ID
-        int myStockQuantity = myStock.getQuantity();
+        // update stock if available else create new Stock
+        if (myStock == null) {
+            Stock newStock = new Stock(foundItem, myPurchaserOrder.getQuantity());
+            stockRepository.save(newStock);
+        } else {
+            int myStockQuantity = myStock.getQuantity();
 
-        // update stock quantity
-        myStockQuantity += myPurchaserOrder.getQuantity();
+            // update stock quantity
+            myStockQuantity += myPurchaserOrder.getQuantity();
 
-        // update stock quantity of Stock Item
-        myStock.setQuantity(myStockQuantity);
-        stockRepository.save(myStock);
+            // update stock quantity of Stock Item
+            myStock.setQuantity(myStockQuantity);
+            stockRepository.save(myStock);
+        }
+
     }
 
 
