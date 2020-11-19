@@ -1,10 +1,10 @@
 package com.niafikra.inventory.backend.entity;
 
 import javax.persistence.*;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.Collection;
 
 
 @Entity
@@ -15,7 +15,7 @@ public class PurchaseOrder {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-//    @NotNull
+    //    @NotNull
     private LocalDate orderDate;
 
     @ManyToOne
@@ -23,25 +23,16 @@ public class PurchaseOrder {
 //    @NotBlank
     private Supplier supplier;
 
-    @ManyToOne
-    @NotNull
-//    @NotBlank
-    private Item item;
-
-//    @Min(value = 1, message = "required more than 1")
-    @NotNull
-//    @NotBlank
-    private int quantity;
-
+    @NotEmpty
+    @OneToMany
+    private Collection<POItem> items;
 
     public PurchaseOrder() {
     }
 
-    public PurchaseOrder(LocalDate orderDate, Supplier supplier, Item item, int quantity) {
+    public PurchaseOrder(LocalDate orderDate, Supplier supplier) {
         this.orderDate = orderDate;
         this.supplier = supplier;
-        this.item = item;
-        this.quantity = quantity;
     }
 
     public Long getId() {
@@ -68,20 +59,12 @@ public class PurchaseOrder {
         this.supplier = supplier;
     }
 
-    public Item getItem() {
-        return item;
+    public Collection<POItem> getItems() {
+        return items;
     }
 
-    public void setItem(Item item) {
-        this.item = item;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    public void setItems(Collection<POItem> items) {
+        this.items = items;
     }
 
     // to string
@@ -91,8 +74,7 @@ public class PurchaseOrder {
                 "id=" + id +
                 ", orderDate=" + orderDate +
                 ", supplier='" + supplier + '\'' +
-                ", item='" + item + '\'' +
-                ", quantity=" + quantity +
+
                 '}';
     }
 }

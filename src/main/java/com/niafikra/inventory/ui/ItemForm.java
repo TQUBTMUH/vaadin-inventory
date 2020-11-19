@@ -17,6 +17,8 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.router.Route;
 
+import java.util.Arrays;
+
 @Route("item-form")
 public class ItemForm extends FormLayout {
 
@@ -82,7 +84,7 @@ public class ItemForm extends FormLayout {
         Div header = new Div(new H3("Create new item"));
 
         add(header, code, name, save);
-    }
+ }
 
     private void clearFields() {
         binder.readBean(null);

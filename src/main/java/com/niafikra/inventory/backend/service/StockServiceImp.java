@@ -17,12 +17,14 @@ public class StockServiceImp implements StockService {
 
     PurchaseOrderRepository purchaseOrderRepository;
 
-    // used down below
-    PurchaseOrder myPurchaserOrder;
+    PurchaseOrderService purchaseOrderService;
 
-    public StockServiceImp(StockRepository stockRepository, PurchaseOrderRepository purchaseOrderRepository) {
+    public StockServiceImp(StockRepository stockRepository,
+                           PurchaseOrderRepository purchaseOrderRepository,
+                           PurchaseOrderService purchaseOrderService) {
         this.stockRepository = stockRepository;
         this.purchaseOrderRepository = purchaseOrderRepository;
+        this.purchaseOrderService = purchaseOrderService;
     }
 
     @Override
@@ -43,7 +45,9 @@ public class StockServiceImp implements StockService {
     @Override
     public void customeStockUpdate(Long theId) {
         // get the item in PO with given Id
-        myPurchaserOrder = purchaseOrderRepository.getOne(theId);
+//        myPurchaserOrder = purchaseOrderRepository.getOne(theId);
+        PurchaseOrder myPurchaserOrder = purchaseOrderService.findById(theId).get();
+//                .orElseThrow(() -> new IllegalArgumentException("There is no PO with ID "+theId));
 
         // find stock record using item Id
         Item foundItem = myPurchaserOrder.getItem();

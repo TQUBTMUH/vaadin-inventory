@@ -3,6 +3,7 @@ package com.niafikra.inventory.backend.service;
 import com.niafikra.inventory.backend.entity.PurchaseOrder;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PurchaseOrderService {
     public List<PurchaseOrder> findAll();
@@ -11,5 +12,5 @@ public interface PurchaseOrderService {
 
     public void save(PurchaseOrder purchaseOrder);
 
-    public PurchaseOrder findById(Long theId);
+    public Optional<PurchaseOrder> findById(Long theId);
 }

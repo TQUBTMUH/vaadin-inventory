@@ -43,6 +43,7 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
+
     </repositories>
 
     <pluginRepositories>
@@ -69,6 +70,11 @@
     </dependencyManagement>
 
     <dependencies>
+        <dependency>
+            <groupId>org.vaadin.tatu</groupId>
+            <artifactId>twincolselect</artifactId>
+            <version>1.6.0</version>
+        </dependency>
         <dependency>
             <groupId>com.vaadin</groupId>
             <!-- Replace artifactId with vaadin-core to use only free components -->

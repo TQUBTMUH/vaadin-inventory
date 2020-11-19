@@ -9,7 +9,6 @@ import com.niafikra.inventory.backend.service.SupplierService;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Div;
@@ -18,10 +17,10 @@ import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
-
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
+import org.vaadin.tatu.TwinColSelect;
 
 import java.util.List;
 
@@ -35,7 +34,11 @@ public class OrderForm extends FormLayout {
     // Global components and properties
     DatePicker orderDate = new DatePicker("Order Date");
     Select<Supplier> supplier = new Select<>();
-    Select<Item> items = new Select<>();
+
+    //    Select<Item> item = new Select<>();
+//    TwinColSelect<Item> items = new TwinColSelect<>();
+    POItemsSelector  itemsSelector;
+
     IntegerField quantity = new IntegerField("Quantity");
 
     Binder<PurchaseOrder> binder = new BeanValidationBinder<>(PurchaseOrder.class);
@@ -58,13 +61,12 @@ public class OrderForm extends FormLayout {
         supplier.setItems(suppliersList);
 
         // Items
-        items.setLabel("Item Name");
+        item.setLabel("Item Name");
         List<Item> itemList = itemService.findAll();
-        items.setItemLabelGenerator(Item::getName);
-        items.setItems(itemList);
+        item.setItemLabelGenerator(Item::getName);
+        item.setItems(itemList);
 
         // Quantity
-
 
 
         // save button configuration
@@ -80,7 +82,7 @@ public class OrderForm extends FormLayout {
                 // Run validators and write the values to the bean
                 binder.writeBean(newPurchaseOrder);
 
-
+                newPurchaseOrder.setItems(itemsSelector.getSelectedItems());
                 // call backend to store
                 purchaseOrderService.save(newPurchaseOrder);
 
@@ -111,7 +113,7 @@ public class OrderForm extends FormLayout {
 
         Div link = new Div(stockList);
 
-        add(header, newSupplier, orderDate, supplier, items, quantity, save, link);
+        add(header, newSupplier, orderDate, supplier, item, quantity, save, link);
 
     }
 
