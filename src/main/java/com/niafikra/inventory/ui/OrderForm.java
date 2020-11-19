@@ -66,9 +66,6 @@ public class OrderForm extends FormLayout {
         // Quantity
 
 
-        // Binder
-        binder.bindInstanceFields(this);
-
 
         // save button configuration
         Button save = new Button("Save");
@@ -101,6 +98,9 @@ public class OrderForm extends FormLayout {
         });
 
         binder.addStatusChangeListener(event -> save.setEnabled(binder.isValid()));
+
+        // Binder
+        binder.bindInstanceFields(this);
 
         // Header
         Div header = new Div(new H3("Create new order"));
