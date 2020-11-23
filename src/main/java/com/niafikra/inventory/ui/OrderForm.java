@@ -58,6 +58,9 @@ public class OrderForm extends FormLayout {
         supplier.setItemLabelGenerator(Supplier::getName);
         supplier.setItems(suppliersList);
 
+        // Multiple Items Component
+//        ItemsSelector multipleItems = new ItemsSelector();
+
 
         // save button configuration
         Button save = new Button("Save");
@@ -72,7 +75,7 @@ public class OrderForm extends FormLayout {
                 // Run validators and write the values to the bean
                 binder.writeBean(newPurchaseOrder);
 
-//                newPurchaseOrder.setItems(itemsSelector.getSelectedItems());
+//                newPurchaseOrder.setItems(multipleItems.getSelectedItems());
                 // call backend to store
                 purchaseOrderService.save(newPurchaseOrder);
 

@@ -68,7 +68,7 @@ public class ItemsSelectorForm extends FormLayout {
                 // clear fields
                 clearFormFields();
 
-                // update grid
+                // update grid or cause a redirect into grid
 
 
             } catch (ValidationException e) {
