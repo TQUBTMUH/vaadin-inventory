@@ -60,12 +60,14 @@ public class MainView extends VerticalLayout {
         stockGrid.addThemeVariants(GridVariant.LUMO_NO_BORDER,
                 GridVariant.LUMO_ROW_STRIPES, GridVariant.LUMO_NO_ROW_BORDERS);
         stockGrid.setSizeFull();
+        stockGrid.removeColumnByKey("id");
         stockGrid.removeColumnByKey("item");
-        stockGrid.setColumns("quantity");
+        stockGrid.removeColumnByKey("quantity");
         stockGrid.addColumn(stock -> {
             Item item = stock.getItem();
             return item == null ? "-" : item.getName();
         }).setHeader("Item Name");
+        stockGrid.addColumn(Stock::getQuantity).setHeader("Quantity");
 
 
         // Delete button configuration
