@@ -1,6 +1,7 @@
 package com.niafikra.inventory.ui;
 
 import com.niafikra.inventory.backend.entity.Item;
+import com.niafikra.inventory.backend.entity.POItem;
 import com.niafikra.inventory.backend.entity.PurchaseOrder;
 import com.niafikra.inventory.backend.entity.Supplier;
 import com.niafikra.inventory.backend.service.PurchaseOrderService;
@@ -20,6 +21,7 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 
 import java.util.List;
+import java.util.ListIterator;
 
 @Route("list-orders")
 public class ListOrders extends VerticalLayout {
@@ -53,19 +55,20 @@ public class ListOrders extends VerticalLayout {
         orders.addThemeVariants(GridVariant.LUMO_NO_BORDER,
                 GridVariant.LUMO_ROW_STRIPES, GridVariant.LUMO_NO_ROW_BORDERS);
         orders.removeColumnByKey("supplier");
-        orders.removeColumnByKey("item");
-        orders.setColumns("orderDate", "quantity");
+        orders.removeColumnByKey("items");
+        orders.setColumns("orderDate");
 
+        // order column
         orders.addColumn(order -> {
             Supplier supplier = order.getSupplier();
             return supplier == null ? "-" : supplier.getName();
         }).setHeader("Supplier");
 
-        orders.addColumn(orders -> {
-            Item item = orders.getItem();
-            return item == null ? "-" : item.getName();
+        // item column
+        orders.addColumn(order -> {
+            List<POItem> orderList = order.getItems();
+            return orderList;
         }).setHeader("Item");
-
 
         // Receive button configuration
         orders.addComponentColumn(purchaseOrder -> {

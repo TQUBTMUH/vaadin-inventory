@@ -50,21 +50,21 @@ public class StockServiceImp implements StockService {
 //                .orElseThrow(() -> new IllegalArgumentException("There is no PO with ID "+theId));
 
         // find stock record using item Id
-        Item foundItem = myPurchaserOrder.getItem();
-        Stock myStock = stockRepository.findByItem_Id(foundItem.getId());
+//        Item foundItem = myPurchaserOrder.getItems();
+//        Stock myStock = stockRepository.findByItem_Id(foundItem.getId());
 
 //        Long foundItemId = purchaseOrderRepository.findByItemId(myPurchaserOrder.getId());
 //        Stock myStock = stockRepository.findByItem_Id(foundItemId);
 
         // get stock item's ID
-        int myStockQuantity = myStock.getQuantity();
+//        int myStockQuantity = myStock.getQuantity();
 
         // update stock quantity
-        myStockQuantity += myPurchaserOrder.getQuantity();
+//        myStockQuantity += myPurchaserOrder.getQuantity();
 
         // update stock quantity of Stock Item
-        myStock.setQuantity(myStockQuantity);
-        stockRepository.save(myStock);
+//        myStock.setQuantity(myStockQuantity);
+//        stockRepository.save(myStock);
     }
 
 

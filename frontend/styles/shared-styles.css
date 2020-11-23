@@ -10,8 +10,20 @@
   max-width: 350px;
 }
 
-.contact-form {
-  flex: 3;
+/**
+    Style for items selector module
+ */
+
+.items-selector .content {
+  display: flex;
+}
+
+.items-selector .po-item-grid {
+  flex: 2;
+}
+
+.items-selector .item-form {
+  flex: 1;
   padding: var(--lumo-space-m);
 }
 

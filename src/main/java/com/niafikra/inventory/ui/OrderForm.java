@@ -4,6 +4,7 @@ import com.niafikra.inventory.backend.entity.Item;
 import com.niafikra.inventory.backend.entity.PurchaseOrder;
 import com.niafikra.inventory.backend.entity.Supplier;
 import com.niafikra.inventory.backend.service.ItemService;
+import com.niafikra.inventory.backend.service.POItemService;
 import com.niafikra.inventory.backend.service.PurchaseOrderService;
 import com.niafikra.inventory.backend.service.SupplierService;
 import com.vaadin.flow.component.Key;
@@ -35,11 +36,8 @@ public class OrderForm extends FormLayout {
     DatePicker orderDate = new DatePicker("Order Date");
     Select<Supplier> supplier = new Select<>();
 
-    //    Select<Item> item = new Select<>();
-//    TwinColSelect<Item> items = new TwinColSelect<>();
-    POItemsSelector  itemsSelector;
+//    ItemsSelector  itemsSelector = new ItemsSelector();
 
-    IntegerField quantity = new IntegerField("Quantity");
 
     Binder<PurchaseOrder> binder = new BeanValidationBinder<>(PurchaseOrder.class);
 
@@ -60,14 +58,6 @@ public class OrderForm extends FormLayout {
         supplier.setItemLabelGenerator(Supplier::getName);
         supplier.setItems(suppliersList);
 
-        // Items
-        item.setLabel("Item Name");
-        List<Item> itemList = itemService.findAll();
-        item.setItemLabelGenerator(Item::getName);
-        item.setItems(itemList);
-
-        // Quantity
-
 
         // save button configuration
         Button save = new Button("Save");
@@ -82,7 +72,7 @@ public class OrderForm extends FormLayout {
                 // Run validators and write the values to the bean
                 binder.writeBean(newPurchaseOrder);
 
-                newPurchaseOrder.setItems(itemsSelector.getSelectedItems());
+//                newPurchaseOrder.setItems(itemsSelector.getSelectedItems());
                 // call backend to store
                 purchaseOrderService.save(newPurchaseOrder);
 
@@ -113,7 +103,7 @@ public class OrderForm extends FormLayout {
 
         Div link = new Div(stockList);
 
-        add(header, newSupplier, orderDate, supplier, item, quantity, save, link);
+        add(header, newSupplier, orderDate, supplier, save, link);
 
     }
 

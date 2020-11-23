@@ -5,6 +5,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.List;
 
 
 @Entity
@@ -25,7 +26,7 @@ public class PurchaseOrder {
 
     @NotEmpty
     @OneToMany
-    private Collection<POItem> items;
+    private List<POItem> items;
 
     public PurchaseOrder() {
     }
@@ -59,11 +60,11 @@ public class PurchaseOrder {
         this.supplier = supplier;
     }
 
-    public Collection<POItem> getItems() {
+    public List<POItem> getItems() {
         return items;
     }
 
-    public void setItems(Collection<POItem> items) {
+    public void setItems(List<POItem> items) {
         this.items = items;
     }
 
