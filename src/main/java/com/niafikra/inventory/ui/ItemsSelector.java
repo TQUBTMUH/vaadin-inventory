@@ -2,120 +2,74 @@ package com.niafikra.inventory.ui;
 
 import com.niafikra.inventory.backend.entity.Item;
 import com.niafikra.inventory.backend.entity.POItem;
-import com.niafikra.inventory.backend.service.POItemService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+import java.util.LinkedList;
 import java.util.List;
 
-@Route("items-selector")
-public class ItemsSelector extends VerticalLayout {
+@Component
+public class ItemsSelector extends HorizontalLayout implements POItemForm.OnSaveHandler {
 
-    private POItemService poItemService;
+    Grid<POItem> itemsGrid = new Grid<POItem>();
 
-    Grid<POItem> poItemGrid = new Grid<>(POItem.class);
+    private POItemForm itemForm;
 
+    private List<POItem> items = new LinkedList<>();
 
-/*    public ItemsSelector() {
-        addClassName("items-selector");
+    public ItemsSelector(POItemForm itemForm) {
+        this.itemForm = itemForm;
+    }
 
-        // GRID LAYOUT
-        poItemGrid.addClassName("po-item-grid");
-        poItemGrid.setColumns("item", "quantity");
-        poItemGrid.setMaxWidth("600px");
-        poItemGrid.addComponentColumn(poItem -> {
-            return new Button(new Icon(VaadinIcon.CLOSE), delete -> {
-                poItemService.deleteById(poItem.getId());
+    @PostConstruct
+    private void build(){
+        H3 header = new H3("Items to order");
 
-                // update grid
-                updateGrid();
-            });
-        }).setHeader("Delete");
-        Div header = new Div(new H3("Items to order"));
-
-
-        // FORM LAYOUT
-//        ItemsSelectorForm itemForm = new ItemsSelectorForm();
-
-        Button saveBtn = new Button("Save");
-
-
-        Div content = new Div(poItemGrid);
-        content.addClassName("content");
-        content.setSizeFull();
-        add(header, content, saveBtn);
-
-        updateGrid();
-
-    }*/
-
-    public ItemsSelector(@Autowired POItemService poItemService) {
-
-        // Autowired
-        this.poItemService = poItemService;
-
-        addClassName("items-selector");
-
-        // GRID LAYOUT
-        poItemGrid.addClassName("po-item-grid");
-        poItemGrid.removeColumnByKey("id");
-        poItemGrid.removeColumnByKey("item");
-        poItemGrid.removeColumnByKey("quantity");
-
-        poItemGrid.addColumn(poItem -> {
+        itemsGrid.addColumn(poItem -> {
             Item gridItem = poItem.getItem();
             return gridItem.getName();
         }).setHeader("Item");
+        itemsGrid.addColumn(poItem -> poItem.getQuantity()).setHeader("Quantity");
+        itemsGrid.addComponentColumn(poItem -> {
+            return new Button(new Icon(VaadinIcon.CLOSE), event -> {
 
-        poItemGrid.addColumn(POItem::getQuantity).setHeader("Quantity");
-
-        poItemGrid.setMaxWidth("600px");
-        poItemGrid.addComponentColumn(poItem -> {
-            return new Button(new Icon(VaadinIcon.CLOSE), delete -> {
-
-                // Create pop up dialog here
-
-                poItemService.deleteById(poItem.getId());
-
-                // update grid
-                updateGrid();
             });
         }).setHeader("Delete");
-        Div header = new Div(new H3("Items to order"));
 
+        itemsGrid.setMaxWidth("600px");
 
-        // FORM LAYOUT
-//        ItemsSelectorForm itemForm = new ItemsSelectorForm();
+        add(
+                new VerticalLayout(header, itemsGrid),
+                new VerticalLayout(itemForm)
+        );
 
-        Button saveBtn = new Button("Save");
+        itemForm.setOnSaveHandler(this);
 
-
-        Div content = new Div(poItemGrid);
-        content.addClassName("content");
-        content.setSizeFull();
-        add(header, content, saveBtn);
-
-        updateGrid();
-
+        load();
     }
 
-    private void updateGrid() {
-        poItemGrid.setItems(poItemService.findAll());
+
+    public void load(){
+        itemsGrid.setItems(items);
+    }
+    @Override
+    public void onSave(POItem item) {
+        //add item to the grid;
+        items.add(item);
+        load();
     }
 
-    // fetch items with quantity in POItem table
-    public List<POItem> getSelectedItems() {
-        return poItemService.findAll();
+    public List<POItem> getSelectedItems(){
+        return new LinkedList<>(items);
     }
-
 }
 
 

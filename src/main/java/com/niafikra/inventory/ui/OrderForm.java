@@ -33,20 +33,22 @@ public class OrderForm extends FormLayout {
     private ItemService itemService;
 
     // Global components and properties
-    DatePicker orderDate = new DatePicker("Order Date");
-    Select<Supplier> supplier = new Select<>();
-
-//    ItemsSelector  itemsSelector = new ItemsSelector();
+    private DatePicker orderDate = new DatePicker("Order Date");
+    private Select<Supplier> supplier = new Select<>();
+    private ItemsSelector itemsSelector;
 
 
     Binder<PurchaseOrder> binder = new BeanValidationBinder<>(PurchaseOrder.class);
 
-    public OrderForm(SupplierService supplierService, ItemService itemService,
-                     PurchaseOrderService purchaseOrderService) {
+    public OrderForm(SupplierService supplierService,
+                     ItemService itemService,
+                     PurchaseOrderService purchaseOrderService,
+                     ItemsSelector itemsSelector) {
 
         this.supplierService = supplierService;
         this.itemService = itemService;
         this.purchaseOrderService = purchaseOrderService;
+        this.itemsSelector = itemsSelector;
 
         addClassName("centered-content");
 
@@ -74,6 +76,8 @@ public class OrderForm extends FormLayout {
 
                 // Run validators and write the values to the bean
                 binder.writeBean(newPurchaseOrder);
+
+
 
 //                newPurchaseOrder.setItems(multipleItems.getSelectedItems());
                 // call backend to store
@@ -106,7 +110,7 @@ public class OrderForm extends FormLayout {
 
         Div link = new Div(stockList);
 
-        add(header, newSupplier, orderDate, supplier, save, link);
+        add(header, newSupplier, orderDate, supplier,itemsSelector, save, link);
 
     }
 

@@ -25,7 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 
 @Route("stock")
-@CssImport("./styles/shared-styles.css")
 public class MainView extends VerticalLayout {
 
     Grid<Stock> stockGrid = new Grid<>(Stock.class);
