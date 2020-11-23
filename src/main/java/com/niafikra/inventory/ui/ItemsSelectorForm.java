@@ -6,6 +6,8 @@ import com.niafikra.inventory.backend.service.ItemService;
 import com.niafikra.inventory.backend.service.POItemService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
@@ -20,27 +22,31 @@ import java.util.List;
 public class ItemsSelectorForm extends FormLayout {
 
     private POItemService poItemService;
-
     private ItemService itemService;
+
+    // Fields
+    Select<Item> item = new Select<>();
+    IntegerField quantity = new IntegerField("Quantity");
+    Button addBtn = new Button("Add Item");
+
 
     Binder<POItem> binder = new BeanValidationBinder<>(POItem.class);
 
+//    public ItemsSelectorForm() {
+//    }
 
-    public ItemsSelectorForm() {
-
-    }
-
-    public ItemsSelectorForm(POItemService poItemService, ItemService itemService) {
-
+    public ItemsSelectorForm(@Autowired POItemService poItemService, @Autowired ItemService itemService) {
         this.poItemService = poItemService;
         this.itemService = itemService;
 
         addClassName("item-form");
+        setMaxWidth("500px");
+        setSizeFull();
 
         binder.bindInstanceFields(this);
 
+
         // Form Fields
-        Select<Item> item = new Select<>();
         item.setLabel("Item");
 
 
@@ -48,8 +54,7 @@ public class ItemsSelectorForm extends FormLayout {
         item.setItemLabelGenerator(Item::getName);
         item.setItems(itemList);
 
-        IntegerField quantity = new IntegerField("Quantity");
-        Button addBtn = new Button("Add Item", add -> {
+        addBtn.addClickListener (add -> {
             try {
                 // Create empty bean to store the item and quantity
                 POItem newPOitem = new POItem();
@@ -64,7 +69,7 @@ public class ItemsSelectorForm extends FormLayout {
                 clearFormFields();
 
                 // update grid
-//                updateGrid();
+
 
             } catch (ValidationException e) {
                 throw  new RuntimeException("Failed to add item into poItem grid " + e);
@@ -73,8 +78,9 @@ public class ItemsSelectorForm extends FormLayout {
 
         binder.addStatusChangeListener(event -> addBtn.setEnabled(binder.isValid()));
 
-        add(item, quantity, addBtn);
+        Div header = new Div(new H3("Form"));
 
+        add(header, item, quantity, addBtn);
     }
 
     private void clearFormFields() {

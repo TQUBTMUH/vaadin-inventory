@@ -25,9 +25,9 @@ public class ItemForm extends FormLayout {
     private ItemService itemService;
     private StockService stockService;
 
+    // Fields
     TextField code = new TextField();
     TextField name = new TextField();
-
     Button save = new Button("Save");
 
     Binder<Item> binder = new BeanValidationBinder<>(Item.class);

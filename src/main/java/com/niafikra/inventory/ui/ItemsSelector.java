@@ -17,23 +17,22 @@ import java.util.List;
 @Route("items-selector")
 public class ItemsSelector extends VerticalLayout {
 
-    @Autowired
     private POItemService poItemService;
 
     Grid<POItem> poItemGrid = new Grid<>(POItem.class);
-    ItemsSelectorForm itemForm = new ItemsSelectorForm();
 
 
-    public ItemsSelector() {
+    public ItemsSelector(POItemService poItemService) {
 
         // Autowired
-//        this.poItemService = poItemService;
+        this.poItemService = poItemService;
 
         addClassName("items-selector");
 
         // GRID LAYOUT
         poItemGrid.addClassName("po-item-grid");
         poItemGrid.setColumns("item", "quantity");
+        poItemGrid.setMaxWidth("600px");
         poItemGrid.addComponentColumn(poItem -> {
             return new Button(new Icon(VaadinIcon.CLOSE), delete -> {
                 poItemService.deleteById(poItem.getId());
@@ -46,18 +45,15 @@ public class ItemsSelector extends VerticalLayout {
 
 
         // FORM LAYOUT
-        itemForm.addClassName("item-form");
-
+//        ItemsSelectorForm itemForm = new ItemsSelectorForm();
 
         Button saveBtn = new Button("Save");
 
 
-        Div content = new Div();
+        Div content = new Div(poItemGrid);
         content.addClassName("content");
         content.setSizeFull();
-        content.add(poItemGrid, itemForm);
-
-        add(content, saveBtn);
+        add(header, content, saveBtn);
 
         updateGrid();
 
@@ -78,7 +74,7 @@ public class ItemsSelector extends VerticalLayout {
 //    }
 
     private void updateGrid() {
-        poItemService.findAll();
+        poItemGrid.setItems(poItemService.findAll());
     }
 
     // fetch items with quantity in POItem table
