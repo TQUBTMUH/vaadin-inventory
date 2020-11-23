@@ -66,13 +66,16 @@ public class ItemsSelector extends VerticalLayout {
 
         // GRID LAYOUT
         poItemGrid.addClassName("po-item-grid");
+        poItemGrid.removeColumnByKey("id");
         poItemGrid.removeColumnByKey("item");
-        poItemGrid.setColumns("quantity");
+        poItemGrid.removeColumnByKey("quantity");
 
         poItemGrid.addColumn(poItem -> {
             Item gridItem = poItem.getItem();
             return gridItem.getName();
         }).setHeader("Item");
+
+        poItemGrid.addColumn(POItem::getQuantity).setHeader("Quantity");
 
         poItemGrid.setMaxWidth("600px");
         poItemGrid.addComponentColumn(poItem -> {
