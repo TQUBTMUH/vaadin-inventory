@@ -26,6 +26,10 @@ public class ItemsSelectorForm extends FormLayout {
     Binder<POItem> binder = new BeanValidationBinder<>(POItem.class);
 
 
+    public ItemsSelectorForm() {
+
+    }
+
     public ItemsSelectorForm(POItemService poItemService, ItemService itemService) {
 
         this.poItemService = poItemService;
