@@ -11,6 +11,7 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
@@ -19,8 +20,8 @@ import com.vaadin.flow.router.Route;
 
 import java.util.Arrays;
 
-@Route("item-form")
-public class ItemForm extends FormLayout {
+@Route(value = "item-form", layout = MainView.class)
+public class ItemForm extends VerticalLayout {
 
     private ItemService itemService;
     private StockService stockService;
@@ -35,8 +36,6 @@ public class ItemForm extends FormLayout {
     public ItemForm(ItemService itemService, StockService stockService) {
         this.itemService = itemService;
         this.stockService = stockService;
-
-        addClassName("centered-content");
 
         // Code field
         code.setPlaceholder("Item Code");

@@ -1,111 +1,43 @@
 package com.niafikra.inventory.ui;
 
-import com.niafikra.inventory.backend.entity.Item;
-import com.niafikra.inventory.backend.entity.Stock;
-import com.niafikra.inventory.backend.service.StockService;
-import com.vaadin.flow.component.Text;
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.dependency.CssImport;
-import com.vaadin.flow.component.dialog.Dialog;
-import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.grid.GridVariant;
-import com.vaadin.flow.component.html.Anchor;
-import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H3;
-import com.vaadin.flow.component.icon.Icon;
-import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.applayout.AppLayout;
+import com.vaadin.flow.component.applayout.DrawerToggle;
+import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.HighlightConditions;
 import com.vaadin.flow.router.RouterLink;
-import com.vaadin.flow.server.PWA;
-import org.springframework.beans.factory.annotation.Autowired;
 
+public class MainView extends AppLayout {
 
-@Route("stock")
-public class MainView extends VerticalLayout {
-
-    Grid<Stock> stockGrid = new Grid<>(Stock.class);
-
-    private StockService stockService;
-
-    public MainView(@Autowired StockService stockService) {
-        this.stockService = stockService;
-
-        setSizeFull();
-        configureStockGrid();
-
-        // Heading
-        Div header = new Div(new H3("STOCK LIST"));
-        header.setClassName("centered-content");
-
-
-        // Links
-        RouterLink orderList = new RouterLink("My orders", ListOrders.class);
-        RouterLink newOrder = new RouterLink("New Order", OrderForm.class);
-        RouterLink receive = new RouterLink("Receive", ListOrders.class);
-        RouterLink newItem = new RouterLink("New Item", ItemForm.class);
-
-        HorizontalLayout links = new HorizontalLayout(newOrder, orderList, receive, newItem);
-        Div linkBlock = new Div(links);
-
-        add(linkBlock, header, stockGrid);
-        updateList();
+    public MainView() {
+        createHeader();
+        createDrawer();
     }
 
-    private void configureStockGrid() {
-        stockGrid.addThemeVariants(GridVariant.LUMO_NO_BORDER,
-                GridVariant.LUMO_ROW_STRIPES, GridVariant.LUMO_NO_ROW_BORDERS);
-        stockGrid.setSizeFull();
-        stockGrid.removeColumnByKey("id");
-        stockGrid.removeColumnByKey("item");
-        stockGrid.removeColumnByKey("quantity");
-        stockGrid.addColumn(stock -> {
-            Item item = stock.getItem();
-            return item == null ? "-" : item.getName();
-        }).setHeader("Item Name");
-        stockGrid.addColumn(Stock::getQuantity).setHeader("Quantity");
+    private void createDrawer() {
+        RouterLink stockLink = new RouterLink("Stock", StockView.class);
+//        stockLink.setHighlightCondition(HighlightConditions.sameLocation());
+        RouterLink newOrderLink = new RouterLink("New Order", OrderForm.class);
+        RouterLink myOrderLink = new RouterLink("My orders", ListOrders.class);
+        RouterLink receiveLink = new RouterLink("Receive", ListOrders.class);
+        RouterLink newItemLink = new RouterLink("New Item", ItemForm.class);
+        RouterLink newSupplierLink = new RouterLink("New Supplier", SupplierForm.class);
 
-
-        // Delete button configuration
-        stockGrid.addComponentColumn(stock -> {
-            Button deleteBtn = new Button(new Icon(VaadinIcon.CLOSE));
-            deleteBtn.addClickListener(event -> {
-                Dialog alert = new Dialog();
-                alert.setCloseOnEsc(false);
-                alert.setCloseOnOutsideClick(false);
-                Text confirm = new Text("Are you sure you want to alert this stock");
-                Button confirmButton = new Button("Yes", yes -> {
-                    deleteStock(stock.getId());
-                    alert.close();
-                });
-
-                Button denyButton = new Button("No", no -> {
-                    alert.close();
-                });
-
-                HorizontalLayout buttons = new HorizontalLayout(confirmButton, denyButton);
-                VerticalLayout layout = new VerticalLayout(confirm, buttons);
-
-                alert.add(layout);
-                alert.open();
-            });
-
-            return deleteBtn;
-        }).setHeader("Delete");
+        addToDrawer(new VerticalLayout(
+                stockLink, myOrderLink, newOrderLink, receiveLink, newItemLink, newSupplierLink)
+        );
     }
 
-    // update stock list
-    private void updateList() {
-        stockGrid.setItems(stockService.findAll());
-    }
+    private void createHeader() {
+        H2 logo = new H2("Inventory");
 
-    // Delete stock item
-    private void deleteStock(Long theId) {
-        stockService.deleteById(theId);
-        updateList();
-    }
+        HorizontalLayout header = new HorizontalLayout(new DrawerToggle(), logo);
+        header.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.BASELINE);
+        header.setWidth("100%");
+        header.getStyle().set("backgroundColor", "#e3e2e1");
 
+        addToNavbar(header);
+    }
 }

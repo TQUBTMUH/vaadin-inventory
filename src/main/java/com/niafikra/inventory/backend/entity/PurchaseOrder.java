@@ -16,16 +16,14 @@ public class PurchaseOrder {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //    @NotNull
     private LocalDate orderDate;
 
     @ManyToOne
     @NotNull
-//    @NotBlank
     private Supplier supplier;
 
-    @NotEmpty
-    @OneToMany
+    @NotNull
+    @OneToMany(fetch = FetchType.EAGER)
     private List<POItem> items;
 
     public PurchaseOrder() {

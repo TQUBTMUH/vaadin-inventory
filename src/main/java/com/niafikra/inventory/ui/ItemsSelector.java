@@ -7,68 +7,84 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.Route;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.util.LinkedList;
 import java.util.List;
 
 @Component
 public class ItemsSelector extends HorizontalLayout implements POItemForm.OnSaveHandler {
 
-    Grid<POItem> itemsGrid = new Grid<POItem>();
+    private final POItemForm poItemForm;
 
-    private POItemForm itemForm;
+    protected Grid<POItem> poItemGrid = new Grid<POItem>();
 
-    private List<POItem> items = new LinkedList<>();
+    private final List<POItem> poItems = new LinkedList<>();
 
-    public ItemsSelector(POItemForm itemForm) {
-        this.itemForm = itemForm;
-    }
+    public ItemsSelector(@Autowired POItemForm poItemForm) {
 
-    @PostConstruct
-    private void build(){
-        H3 header = new H3("Items to order");
+        // Autowired
+        this.poItemForm = poItemForm;
 
-        itemsGrid.addColumn(poItem -> {
+        addClassName("items-selector");
+
+        // GRID LAYOUT
+        poItemGrid.addColumn(poItem -> {
             Item gridItem = poItem.getItem();
             return gridItem.getName();
         }).setHeader("Item");
-        itemsGrid.addColumn(poItem -> poItem.getQuantity()).setHeader("Quantity");
-        itemsGrid.addComponentColumn(poItem -> {
-            return new Button(new Icon(VaadinIcon.CLOSE), event -> {
+
+        poItemGrid.addColumn(POItem::getQuantity).setHeader("Quantity");
+
+        poItemGrid.addComponentColumn(poItem -> {
+            return new Button(new Icon(VaadinIcon.CLOSE), delete -> {
+
+                // Create pop up dialog here
+                POItem itemToDelete = poItem;
+                poItems.remove(itemToDelete);
+
+                // update grid
+                load();
 
             });
         }).setHeader("Delete");
+        H3 header = new H3("Items to order");
+        add(new VerticalLayout(header, poItemGrid), poItemForm);
 
-        itemsGrid.setMaxWidth("600px");
-
-        add(
-                new VerticalLayout(header, itemsGrid),
-                new VerticalLayout(itemForm)
-        );
-
-        itemForm.setOnSaveHandler(this);
-
+        // update grid
+        poItemForm.setOnSaveHandler(this);
         load();
     }
 
-
-    public void load(){
-        itemsGrid.setItems(items);
+    public void load() {
+        poItemGrid.setItems(poItems);
     }
+
     @Override
     public void onSave(POItem item) {
-        //add item to the grid;
-        items.add(item);
-        load();
+        // Add items to the grid
+        if (poItems.contains(item)) {
+            Notification exist = new Notification(item.getItem().getName()
+                    + "already exist in item list", 2000, Notification.Position.MIDDLE);
+            exist.open();
+        } else {
+            poItems.add(item);
+            load();
+        }
+//        poItems.add(item);
+//        load();
     }
 
-    public List<POItem> getSelectedItems(){
-        return new LinkedList<>(items);
+    protected List<POItem> getItemsSelected() {
+        return poItems;
+    }
+
+    public void clearGrid() {
+        poItems.clear();
     }
 }
 

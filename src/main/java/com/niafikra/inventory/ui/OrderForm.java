@@ -1,6 +1,5 @@
 package com.niafikra.inventory.ui;
 
-import com.niafikra.inventory.backend.entity.Item;
 import com.niafikra.inventory.backend.entity.PurchaseOrder;
 import com.niafikra.inventory.backend.entity.Supplier;
 import com.niafikra.inventory.backend.service.ItemService;
@@ -11,48 +10,46 @@ import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.datepicker.DatePicker;
-import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
-import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
-import org.vaadin.tatu.TwinColSelect;
 
 import java.util.List;
 
-@Route("order-form")
-public class OrderForm extends FormLayout {
+@Route(layout = MainView.class)
+public class OrderForm extends VerticalLayout {
 
     private SupplierService supplierService;
     private PurchaseOrderService purchaseOrderService;
     private ItemService itemService;
+    private ItemsSelector itemsSelector;
+    private POItemService poItemService;
 
     // Global components and properties
-    private DatePicker orderDate = new DatePicker("Order Date");
-    private Select<Supplier> supplier = new Select<>();
-    private ItemsSelector itemsSelector;
+    DatePicker orderDate = new DatePicker("Order Date");
+    Select<Supplier> supplier = new Select<>();
 
 
     Binder<PurchaseOrder> binder = new BeanValidationBinder<>(PurchaseOrder.class);
 
-    public OrderForm(SupplierService supplierService,
-                     ItemService itemService,
-                     PurchaseOrderService purchaseOrderService,
-                     ItemsSelector itemsSelector) {
+    public OrderForm(SupplierService supplierService, ItemService itemService,
+                     PurchaseOrderService purchaseOrderService, ItemsSelector itemsSelector,
+                     POItemService poItemService) {
 
         this.supplierService = supplierService;
         this.itemService = itemService;
         this.purchaseOrderService = purchaseOrderService;
         this.itemsSelector = itemsSelector;
+        this.poItemService = poItemService;
 
-        addClassName("centered-content");
+        itemsSelector.setWidth("80%");
 
-        // DatePicker
 
         // Supplier combobox
         supplier.setLabel("Supplier");
@@ -60,9 +57,8 @@ public class OrderForm extends FormLayout {
         supplier.setItemLabelGenerator(Supplier::getName);
         supplier.setItems(suppliersList);
 
-        // Multiple Items Component
-//        ItemsSelector multipleItems = new ItemsSelector();
-
+        // Items selector
+        ItemsSelector itemsList = itemsSelector;
 
         // save button configuration
         Button save = new Button("Save");
@@ -78,16 +74,16 @@ public class OrderForm extends FormLayout {
                 binder.writeBean(newPurchaseOrder);
 
 
-
-//                newPurchaseOrder.setItems(multipleItems.getSelectedItems());
                 // call backend to store
+                itemsList.getItemsSelected().forEach(poItem -> poItemService.save(poItem));
+                newPurchaseOrder.setItems(itemsSelector.getItemsSelected());
                 purchaseOrderService.save(newPurchaseOrder);
 
                 // show success notification
 
 
                 // clear form fields
-                clearFormFields();
+                clearForm();
 
             } catch (ValidationException e) {
                 // create custom validation
@@ -105,17 +101,22 @@ public class OrderForm extends FormLayout {
         Div header = new Div(new H3("Create new order"));
 
         // Links
-        RouterLink stockList = new RouterLink("Back to stock", MainView.class);
+        RouterLink stockList = new RouterLink("Back to stock", StockView.class);
         RouterLink newSupplier = new RouterLink("New Supplier", SupplierForm.class);
 
         Div link = new Div(stockList);
 
-        add(header, newSupplier, orderDate, supplier,itemsSelector, save, link);
+        add(header, newSupplier, orderDate, supplier, itemsList, save, link);
 
     }
 
-    private void clearFormFields() {
+    private void clearForm() {
+        // clear fields
         binder.readBean(null);
+
+        // clear grid
+        itemsSelector.clearGrid();
+        itemsSelector.load();
     }
 
 

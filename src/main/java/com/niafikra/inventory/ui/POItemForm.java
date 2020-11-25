@@ -44,7 +44,7 @@ public class POItemForm extends VerticalLayout {
 
 
         List<Item> itemList = itemService.findAll();
-//        item.setItemLabelGenerator(Item::getName);
+        item.setItemLabelGenerator(Item::getName);
         item.setItems(itemList);
 
         addBtn.addClickListener (add -> {
@@ -54,8 +54,8 @@ public class POItemForm extends VerticalLayout {
 
                 // Run validators and write the values to the bean
                 binder.writeBean(newPOitem);
-
                 onSaveHandler.onSave(newPOitem);
+
                 // clear fields
                 clearFormFields();
 
@@ -69,7 +69,7 @@ public class POItemForm extends VerticalLayout {
 
         binder.addStatusChangeListener(event -> addBtn.setEnabled(binder.isValid()));
 
-        Div header = new Div(new H3("Form"));
+        H3 header = new H3("Form");
 
         add(header, item, quantity, addBtn);
     }

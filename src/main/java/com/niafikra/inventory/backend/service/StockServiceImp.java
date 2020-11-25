@@ -3,6 +3,7 @@ package com.niafikra.inventory.backend.service;
 import com.niafikra.inventory.backend.dao.PurchaseOrderRepository;
 import com.niafikra.inventory.backend.dao.StockRepository;
 import com.niafikra.inventory.backend.entity.Item;
+import com.niafikra.inventory.backend.entity.POItem;
 import com.niafikra.inventory.backend.entity.PurchaseOrder;
 import com.niafikra.inventory.backend.entity.Stock;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,21 +51,39 @@ public class StockServiceImp implements StockService {
 //                .orElseThrow(() -> new IllegalArgumentException("There is no PO with ID "+theId));
 
         // find stock record using item Id
-//        Item foundItem = myPurchaserOrder.getItems();
-//        Stock myStock = stockRepository.findByItem_Id(foundItem.getId());
+        List<POItem> poItems = myPurchaserOrder.getItems();
+
+        for (POItem poItem : poItems) {
+            Stock myStock = stockRepository.findByItem_Id(poItem.getItem().getId());
+
+            if (myStock == null) {
+                // If item isn't available in stock table
+                Stock newStock = new Stock(poItem.getItem(), 0);
+
+                // get stock poItem's ID
+                int myStockQuantity = newStock.getQuantity();
+
+                // update stock quantity
+                myStockQuantity += poItem.getQuantity();
+
+                // update stock quantity of Stock Item
+                newStock.setQuantity(myStockQuantity);
+                stockRepository.save(newStock);
+            } else {
+                // get stock in stock table poItem's ID
+                int myStockQuantity = myStock.getQuantity();
+
+                // update stock quantity
+                myStockQuantity += poItem.getQuantity();
+
+                // update stock quantity of Stock Item
+                myStock.setQuantity(myStockQuantity);
+                stockRepository.save(myStock);
+            }
+        }
 
 //        Long foundItemId = purchaseOrderRepository.findByItemId(myPurchaserOrder.getId());
 //        Stock myStock = stockRepository.findByItem_Id(foundItemId);
-
-        // get stock item's ID
-//        int myStockQuantity = myStock.getQuantity();
-
-        // update stock quantity
-//        myStockQuantity += myPurchaserOrder.getQuantity();
-
-        // update stock quantity of Stock Item
-//        myStock.setQuantity(myStockQuantity);
-//        stockRepository.save(myStock);
     }
 
 
