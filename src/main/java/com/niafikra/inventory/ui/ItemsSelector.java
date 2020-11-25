@@ -11,12 +11,14 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.util.LinkedList;
 import java.util.List;
 
 @Component
+@Scope("prototype")
 public class ItemsSelector extends HorizontalLayout implements POItemForm.OnSaveHandler {
 
     private final POItemForm poItemForm;
