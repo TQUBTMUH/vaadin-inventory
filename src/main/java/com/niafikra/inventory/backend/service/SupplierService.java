@@ -5,9 +5,14 @@ import com.niafikra.inventory.backend.entity.Supplier;
 import java.util.List;
 
 public interface SupplierService {
-    public List<Supplier> findAll();
+    List<Supplier> findAll();
 
-    public void save(Supplier newSupplier);
+    Supplier save(Supplier newSupplier);
 
-    public Supplier findById(Long theId);
+    Supplier findById(Long theId);
+
+    void delete(Supplier supplier);
+
+    Supplier update(Supplier supplier);
+
 }

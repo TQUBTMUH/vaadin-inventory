@@ -17,76 +17,57 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.router.Route;
+import org.vaadin.crudui.crud.CrudListener;
+import org.vaadin.crudui.crud.CrudOperation;
+import org.vaadin.crudui.crud.impl.GridCrud;
 
 import java.util.Arrays;
+import java.util.Collection;
 
-@Route(value = "item-form", layout = MainView.class)
+@Route(layout = MainView.class)
 public class ItemForm extends VerticalLayout {
 
     private ItemService itemService;
-    private StockService stockService;
 
-    // Fields
-    TextField code = new TextField();
-    TextField name = new TextField();
-    Button save = new Button("Save");
+    GridCrud<Item> itemGridCrud = new GridCrud<>(Item.class);
 
-    Binder<Item> binder = new BeanValidationBinder<>(Item.class);
-
-    public ItemForm(ItemService itemService, StockService stockService) {
+    public ItemForm(ItemService itemService) {
         this.itemService = itemService;
-        this.stockService = stockService;
 
-        // Code field
-        code.setPlaceholder("Item Code");
+        // configuring itemGridCrud
+        itemGridCrud.getCrudFormFactory().setUseBeanValidation(true);
+        itemGridCrud.getGrid().removeColumnByKey("id");
 
-        // name field
-        name.setPlaceholder("Item Name");
+        // customizing fields
+        itemGridCrud.getCrudFormFactory().setVisibleProperties(CrudOperation.ADD, "name", "code");
+        itemGridCrud.getCrudFormFactory().setVisibleProperties(CrudOperation.UPDATE, "name", "code");
+        itemGridCrud.getCrudFormFactory().setVisibleProperties(CrudOperation.READ, "name", "code");
+        itemGridCrud.getCrudFormFactory().setVisibleProperties(CrudOperation.DELETE, "name", "code");
 
-        // Button configuration
-        save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        save.addClickShortcut(Key.ENTER);
+        // crud listener
+        itemGridCrud.setCrudListener(new CrudListener<Item>() {
+            @Override
+            public Collection<Item> findAll() {
+                return itemService.findAll();
+            }
 
-        save.addClickListener(click -> {
-            try {
-                // Create empty bean to store item details
-                Item newItem = new Item();
+            @Override
+            public Item add(Item newItem) {
+                return itemService.save(newItem);
+            }
 
-                // Run validators and write the values to the bean
-                binder.writeBean(newItem);
+            @Override
+            public Item update(Item item) {
+                return itemService.update(item);
+            }
 
-                // Save bean to backend
-                itemService.save(newItem);
-
-                // Save new item into stock
-                Item savedItem = itemService.findById(newItem.getId());
-
-                Stock newStock = new Stock(savedItem, 0);
-                stockService.save(newStock);
-
-                // create notification
-
-
-                // clear fields
-                clearFields();
-
-            } catch (ValidationException e) {
-                e.printStackTrace();
+            @Override
+            public void delete(Item item) {
+                itemService.delete(item);
             }
         });
-        binder.addStatusChangeListener(event -> save.setEnabled(binder.isValid()));
-
-        binder.bindInstanceFields(this);
 
 
-        // Header
-        Div header = new Div(new H3("Create new item"));
-
-        add(header, code, name, save);
- }
-
-    private void clearFields() {
-        binder.readBean(null);
+        add(itemGridCrud);
     }
-
 }

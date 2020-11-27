@@ -23,7 +23,7 @@ public class SupplierServiceImp implements SupplierService {
     }
 
     @Override
-    public void save(Supplier newSupplier) {
+    public Supplier save(Supplier newSupplier) {
         Supplier supplier = supplierRepository.findByName(newSupplier.getName());
 
         if (supplier == null) {
@@ -31,6 +31,7 @@ public class SupplierServiceImp implements SupplierService {
         } else {
             throw new RuntimeException("Supplier " + newSupplier.getName() + " already exists");
         }
+        return newSupplier;
     }
 
     @Override
@@ -45,6 +46,18 @@ public class SupplierServiceImp implements SupplierService {
         }
 
         return theSupplier;
+    }
+
+    @Override
+    public void delete(Supplier supplier) {
+        supplierRepository.delete(supplier);
+    }
+
+    @Override
+    public Supplier update(Supplier supplier) {
+        supplierRepository.save(supplier);
+
+        return supplier;
     }
 }
 

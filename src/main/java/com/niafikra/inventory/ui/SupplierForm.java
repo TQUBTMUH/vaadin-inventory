@@ -2,77 +2,64 @@ package com.niafikra.inventory.ui;
 
 import com.niafikra.inventory.backend.entity.Supplier;
 import com.niafikra.inventory.backend.service.SupplierService;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.Key;
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.data.binder.BeanValidationBinder;
-import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.vaadin.crudui.crud.CrudListener;
+import org.vaadin.crudui.crud.CrudOperation;
+import org.vaadin.crudui.crud.impl.GridCrud;
+import org.vaadin.crudui.form.CrudFormFactory;
+import org.vaadin.crudui.layout.impl.HorizontalSplitCrudLayout;
+
+import java.util.Collection;
 
 @Route(layout = MainView.class)
 public class SupplierForm extends VerticalLayout {
 
-    Button save = new Button("Save");
-
     private SupplierService supplierService;
 
-    TextField name = new TextField();
-
-    Binder<Supplier> binder = new BeanValidationBinder<>(Supplier.class);
+    GridCrud<Supplier> supplierGridCrud = new GridCrud<>(Supplier.class);
 
     public SupplierForm(@Autowired SupplierService supplierService) {
         this.supplierService = supplierService;
 
-        addClassName("centered-content");
 
-        // name field
-        name.setPlaceholder("Name");
+        // configuring supplier grid
+        supplierGridCrud.getCrudFormFactory().setUseBeanValidation(true);
+        supplierGridCrud.getGrid().removeColumnByKey("id");
 
-        save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        save.addClickShortcut(Key.ENTER);
+        // customizing fields
+        supplierGridCrud.getCrudFormFactory().setVisibleProperties(CrudOperation.ADD, "name");
+        supplierGridCrud.getCrudFormFactory().setVisibleProperties(CrudOperation.READ, "name");
+        supplierGridCrud.getCrudFormFactory().setVisibleProperties(CrudOperation.UPDATE, "name");
+        supplierGridCrud.getCrudFormFactory().setVisibleProperties(CrudOperation.DELETE, "name");
 
-        binder.addStatusChangeListener(event -> save.setEnabled(binder.isValid()));
+        // CRUD Listener
+        supplierGridCrud.setCrudListener(new CrudListener<Supplier>() {
+            @Override
+            public Collection<Supplier> findAll() {
 
-        save.addClickListener(click -> {
-            try {
-                // Create empty bean to store the new Supplier into
-                Supplier newSupplier = new Supplier();
+                return supplierService.findAll();
+            }
 
-                // Run validators and write the values to the bean
-                binder.writeBean(newSupplier);
+            @Override
+            public Supplier add(Supplier newSupplier) {
+                return supplierService.save(newSupplier);
+            }
 
-                // Call backend to store data
-                supplierService.save(newSupplier);
+            @Override
+            public Supplier update(Supplier supplier) {
+                return supplierService.update(supplier);
+            }
 
-                // Notification
-
-                // clear fields
-                clearFields();
-
-            } catch (ValidationException e) {
-                e.printStackTrace();
+            @Override
+            public void delete(Supplier supplier) {
+                supplierService.delete(supplier);
             }
         });
 
-        // Header
-        Div header = new Div(new H3("Create New Supplier"));
 
-        add(header, name, save);
-
-        // Binder
-        binder.bindInstanceFields(this);
+        // add component
+        add(supplierGridCrud);
     }
-
-    private void clearFields() {
-        binder.readBean(null);
-    }
-
 }
