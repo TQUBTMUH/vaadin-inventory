@@ -8,6 +8,7 @@ import com.niafikra.inventory.backend.service.PurchaseOrderService;
 import com.niafikra.inventory.backend.service.StockService;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
@@ -16,6 +17,8 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.data.provider.CallbackDataProvider;
+import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 
@@ -29,6 +32,7 @@ public class ListOrders extends VerticalLayout {
     private PurchaseOrderService purchaseOrderService;
     private StockService stockService;
     private POItemService poItemService;
+    private PurchaseOrderProvider provider;
 
 
     public ListOrders(PurchaseOrderService purchaseOrderService, StockService stockService,
@@ -37,6 +41,7 @@ public class ListOrders extends VerticalLayout {
         this.stockService = stockService;
         this.poItemService = poItemService;
 
+        orders.setDataProvider(provider);
         // configure grid
         configureOrdersGrid();
 
@@ -55,7 +60,7 @@ public class ListOrders extends VerticalLayout {
                 GridVariant.LUMO_ROW_STRIPES, GridVariant.LUMO_NO_ROW_BORDERS);
 
         orders.addColumn(order -> {
-           return order.getOrderDate();
+            return order.getOrderDate();
         }).setHeader("Date");
         orders.addColumn(order -> {
             Supplier supplier = order.getSupplier();
@@ -125,6 +130,17 @@ public class ListOrders extends VerticalLayout {
     }
 
     public void updateList() {
-        orders.setItems(purchaseOrderService.findAll());
+        provider.refreshAll();
+//        orders.setItems(purchaseOrderService.findAll());
+
+
+//        DataProvider<PurchaseOrder, ?> ordrProvider =
+//                new CallbackDataProvider<PurchaseOrder, Void>(query -> {
+//                    return purchaseOrderService.findAll(query.getOffset(),query.getLimit());
+//                }, query -> {
+//                   return purchaseOrderService.count().intValue();
+//                });
+//        orders.setDataProvider(provider);
+
     }
 }

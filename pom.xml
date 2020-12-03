@@ -76,6 +76,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.vaadin.artur</groupId>
+            <artifactId>spring-data-provider</artifactId>
+            <version>2.1.0</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.vaadin.tatu</groupId>
             <artifactId>twincolselect</artifactId>
             <version>1.6.0</version>
