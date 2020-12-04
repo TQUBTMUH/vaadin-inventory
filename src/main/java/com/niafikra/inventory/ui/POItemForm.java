@@ -5,6 +5,7 @@ import com.niafikra.inventory.backend.entity.POItem;
 import com.niafikra.inventory.backend.service.ItemService;
 import com.niafikra.inventory.backend.service.POItemService;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H3;
@@ -29,7 +30,7 @@ public class POItemForm extends VerticalLayout {
     private ItemService itemService;
 
     // Fields
-    Select<Item> item = new Select<>();
+    ComboBox<Item> item = new ComboBox<>();
     IntegerField quantity = new IntegerField("Quantity");
     Button addBtn = new Button("Add Item");
 

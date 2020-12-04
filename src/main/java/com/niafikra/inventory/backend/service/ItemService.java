@@ -17,8 +17,8 @@ public interface ItemService {
 
     void delete(Item item);
 
-    Long count();
+    Long count(String itemFilter);
 
-    Page<Item> findAll(Pageable pageable);
+    Page<Item> findAll(String itemFilter,Pageable pageable);
 
 }

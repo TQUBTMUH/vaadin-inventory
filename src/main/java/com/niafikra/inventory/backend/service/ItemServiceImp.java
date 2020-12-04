@@ -74,12 +74,14 @@ public class ItemServiceImp implements ItemService{
     }
 
     @Override
-    public Long count() {
+    public Long count(String itemFilter) {
+        if(itemFilter == null)
         return itemRepository.count();
+        else itemRepository.countAllByNameStartingWith(itemFilter);
     }
 
     @Override
-    public Page<Item> findAll(Pageable pageable) {
+    public Page<Item> findAll(String itemFilter, Pageable pageable) {
         return itemRepository.findAll(pageable);
     }
 

@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 public interface ItemRepository extends JpaRepository<Item, Long> {
     public Item findByName(String itemName);
     public Item findByCode(String code);
+    public Long countAllByNameStartingWith(String itemFilter);
 }

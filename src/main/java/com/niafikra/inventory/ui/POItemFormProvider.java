@@ -14,7 +14,7 @@ import java.util.List;
 
 @Component
 @Scope("prototype")
-public class POItemFormProvider extends PageableDataProvider<Item, Void> {
+public class POItemFormProvider extends PageableDataProvider<Item, String> {
 
     private ItemService itemService;
 
@@ -23,8 +23,10 @@ public class POItemFormProvider extends PageableDataProvider<Item, Void> {
     }
 
     @Override
-    protected Page<Item> fetchFromBackEnd(Query<Item, Void> query, Pageable pageable) {
-        return itemService.findAll(pageable);
+    protected Page<Item> fetchFromBackEnd(Query<Item, String> query, Pageable pageable) {
+        return itemService.findAll(
+                query.getFilter().orElse(null),
+                pageable);
     }
 
     @Override
@@ -33,7 +35,7 @@ public class POItemFormProvider extends PageableDataProvider<Item, Void> {
     }
 
     @Override
-    protected int sizeInBackEnd(Query<Item, Void> query) {
-        return itemService.count().intValue();
+    protected int sizeInBackEnd(Query<Item, String> query) {
+        return itemService.count(query.getFilter().orElse(null)).intValue();
     }
 }
