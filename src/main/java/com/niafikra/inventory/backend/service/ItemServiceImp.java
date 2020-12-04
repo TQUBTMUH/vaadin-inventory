@@ -4,6 +4,8 @@ import com.niafikra.inventory.backend.dao.ItemRepository;
 import com.niafikra.inventory.backend.entity.Item;
 import com.niafikra.inventory.backend.entity.Stock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -69,6 +71,16 @@ public class ItemServiceImp implements ItemService{
     @Override
     public void delete(Item item) {
         itemRepository.delete(item);
+    }
+
+    @Override
+    public Long count() {
+        return itemRepository.count();
+    }
+
+    @Override
+    public Page<Item> findAll(Pageable pageable) {
+        return itemRepository.findAll(pageable);
     }
 
 }

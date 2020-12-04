@@ -2,7 +2,6 @@ package com.niafikra.inventory.backend.service;
 
 import com.niafikra.inventory.backend.dao.PurchaseOrderRepository;
 import com.niafikra.inventory.backend.entity.PurchaseOrder;
-import com.niafikra.inventory.ui.OffsetBasedPageRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

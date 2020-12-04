@@ -10,6 +10,7 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.data.provider.ListDataProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -26,6 +27,7 @@ public class ItemsSelector extends HorizontalLayout implements POItemForm.OnSave
     protected Grid<POItem> poItemGrid = new Grid<POItem>();
 
     private final List<POItem> poItems = new LinkedList<>();
+    private ListDataProvider<POItem> dataProvider = new ListDataProvider<>(poItems);
 
     public ItemsSelector(@Autowired POItemForm poItemForm) {
 
@@ -35,6 +37,7 @@ public class ItemsSelector extends HorizontalLayout implements POItemForm.OnSave
         addClassName("items-selector");
 
         // GRID LAYOUT
+        poItemGrid.setDataProvider(dataProvider);
         poItemGrid.addColumn(poItem -> {
             Item gridItem = poItem.getItem();
             return gridItem.getName();
@@ -63,7 +66,7 @@ public class ItemsSelector extends HorizontalLayout implements POItemForm.OnSave
     }
 
     public void load() {
-        poItemGrid.setItems(poItems);
+        dataProvider.refreshAll();
     }
 
     @Override

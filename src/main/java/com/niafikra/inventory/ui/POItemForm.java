@@ -36,18 +36,22 @@ public class POItemForm extends VerticalLayout {
     Binder<POItem> binder = new BeanValidationBinder<>(POItem.class);
 
     private OnSaveHandler onSaveHandler;
+    private POItemFormProvider provider;
 
-    public POItemForm(@Autowired ItemService itemService) {
+    public POItemForm(ItemService itemService, POItemFormProvider provider) {
 
         this.itemService = itemService;
+        this.provider = provider;
+
         binder.bindInstanceFields(this);
         // Form Fields
         item.setLabel("Item");
 
 
-        List<Item> itemList = itemService.findAll();
-        item.setItemLabelGenerator(Item::getName);
-        item.setItems(itemList);
+//        List<Item> itemList = itemService.findAll();
+//        item.setItemLabelGenerator(Item::getName);
+//        item.setItems(itemList);
+        item.setDataProvider(provider);
 
         addBtn.addClickListener (add -> {
             try {

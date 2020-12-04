@@ -36,10 +36,11 @@ public class ListOrders extends VerticalLayout {
 
 
     public ListOrders(PurchaseOrderService purchaseOrderService, StockService stockService,
-                      POItemService poItemService) {
+                      POItemService poItemService, PurchaseOrderProvider provider) {
         this.purchaseOrderService = purchaseOrderService;
         this.stockService = stockService;
         this.poItemService = poItemService;
+        this.provider = provider;
 
         orders.setDataProvider(provider);
         // configure grid

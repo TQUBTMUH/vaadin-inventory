@@ -9,6 +9,7 @@ import com.niafikra.inventory.backend.service.SupplierService;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H3;
@@ -30,6 +31,7 @@ public class OrderForm extends VerticalLayout {
     private ItemService itemService;
     private ItemsSelector itemsSelector;
     private POItemService poItemService;
+    private SupplierProvider provider;
 
     // Global components and properties
     DatePicker orderDate = new DatePicker("Order Date");
@@ -40,22 +42,21 @@ public class OrderForm extends VerticalLayout {
 
     public OrderForm(SupplierService supplierService, ItemService itemService,
                      PurchaseOrderService purchaseOrderService, ItemsSelector itemsSelector,
-                     POItemService poItemService) {
+                     POItemService poItemService, SupplierProvider provider) {
 
         this.supplierService = supplierService;
         this.itemService = itemService;
         this.purchaseOrderService = purchaseOrderService;
         this.itemsSelector = itemsSelector;
         this.poItemService = poItemService;
+        this.provider = provider;
 
         itemsSelector.setWidth("80%");
 
 
         // Supplier combobox
         supplier.setLabel("Supplier");
-        List<Supplier> suppliersList = supplierService.findAll();
-        supplier.setItemLabelGenerator(Supplier::getName);
-        supplier.setItems(suppliersList);
+        supplier.setDataProvider(provider);
 
         // Items selector
         ItemsSelector itemsList = itemsSelector;

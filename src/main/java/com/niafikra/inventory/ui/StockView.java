@@ -31,10 +31,13 @@ public class StockView extends VerticalLayout {
     private Grid<Stock> stockGrid = new Grid<Stock>();
 
     private StockService stockService;
+    private StockViewProvider provider;
 
-    public StockView(@Autowired StockService stockService) {
+    public StockView(StockService stockService, StockViewProvider provider) {
         this.stockService = stockService;
+        this.provider = provider;
 
+        stockGrid.setDataProvider(provider);
         configureStockGrid();
 
         // Heading
@@ -83,7 +86,7 @@ public class StockView extends VerticalLayout {
 
     // update stock list
     private void updateList() {
-        stockGrid.setItems(stockService.findAll());
+        provider.refreshAll();
     }
 
     // Delete stock item

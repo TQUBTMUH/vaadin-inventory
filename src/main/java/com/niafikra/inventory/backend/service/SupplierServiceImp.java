@@ -2,7 +2,8 @@ package com.niafikra.inventory.backend.service;
 
 import com.niafikra.inventory.backend.dao.SupplierRepository;
 import com.niafikra.inventory.backend.entity.Supplier;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -58,6 +59,16 @@ public class SupplierServiceImp implements SupplierService {
         supplierRepository.save(supplier);
 
         return supplier;
+    }
+
+    @Override
+    public Page<Supplier> findAll(Pageable pageable) {
+        return supplierRepository.findAll(pageable);
+    }
+
+    @Override
+    public Long count() {
+        return count();
     }
 }
 

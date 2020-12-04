@@ -9,13 +9,13 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 public interface PurchaseOrderService {
-    public List<PurchaseOrder> findAll();
+    List<PurchaseOrder> findAll();
 
-    public void deleteById(Long theId);
+    void deleteById(Long theId);
 
-    public void save(PurchaseOrder purchaseOrder);
+    void save(PurchaseOrder purchaseOrder);
 
-    public Optional<PurchaseOrder> findById(Long theId);
+    Optional<PurchaseOrder> findById(Long theId);
 
 //    Stream<PurchaseOrder> findAll(int offset, int limit);
 

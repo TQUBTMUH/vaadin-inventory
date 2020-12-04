@@ -7,6 +7,8 @@ import com.niafikra.inventory.backend.entity.POItem;
 import com.niafikra.inventory.backend.entity.PurchaseOrder;
 import com.niafikra.inventory.backend.entity.Stock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -41,6 +43,16 @@ public class StockServiceImp implements StockService {
     @Override
     public void save(Stock stock) {
         stockRepository.save(stock);
+    }
+
+    @Override
+    public Page<Stock> findAll(Pageable pageable) {
+        return stockRepository.findAll(pageable);
+    }
+
+    @Override
+    public Long count() {
+        return stockRepository.count();
     }
 
     @Override

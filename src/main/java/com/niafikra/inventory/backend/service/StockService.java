@@ -1,16 +1,22 @@
 package com.niafikra.inventory.backend.service;
 
 import com.niafikra.inventory.backend.entity.Stock;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 public interface StockService {
-    public List<Stock> findAll();
+    List<Stock> findAll();
 
     // auto increment item quantity with value from received PO items
-    public void customeStockUpdate(Long theId);
+    void customeStockUpdate(Long theId);
 
-    public void deleteById(Long theId);
+    void deleteById(Long theId);
 
-    public void save(Stock stock);
+    void save(Stock stock);
+
+    Page<Stock> findAll(Pageable pageable);
+
+    Long count();
 }
