@@ -9,7 +9,6 @@ import com.niafikra.inventory.backend.service.SupplierService;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H3;
@@ -21,15 +20,13 @@ import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 
-import java.util.List;
-
 @Route(layout = MainView.class)
 public class OrderForm extends VerticalLayout {
 
     private SupplierService supplierService;
     private PurchaseOrderService purchaseOrderService;
     private ItemService itemService;
-    private ItemsSelector itemsSelector;
+    private OrderItemsEditor orderItemsEditor;
     private POItemService poItemService;
     private SupplierProvider provider;
 
@@ -41,17 +38,17 @@ public class OrderForm extends VerticalLayout {
     Binder<PurchaseOrder> binder = new BeanValidationBinder<>(PurchaseOrder.class);
 
     public OrderForm(SupplierService supplierService, ItemService itemService,
-                     PurchaseOrderService purchaseOrderService, ItemsSelector itemsSelector,
+                     PurchaseOrderService purchaseOrderService, OrderItemsEditor orderItemsEditor,
                      POItemService poItemService, SupplierProvider provider) {
 
         this.supplierService = supplierService;
         this.itemService = itemService;
         this.purchaseOrderService = purchaseOrderService;
-        this.itemsSelector = itemsSelector;
+        this.orderItemsEditor = orderItemsEditor;
         this.poItemService = poItemService;
         this.provider = provider;
 
-        itemsSelector.setWidth("80%");
+        orderItemsEditor.setWidth("80%");
 
 
         // Supplier combobox
@@ -59,7 +56,7 @@ public class OrderForm extends VerticalLayout {
         supplier.setDataProvider(provider);
 
         // Items selector
-        ItemsSelector itemsList = itemsSelector;
+        OrderItemsEditor itemsList = orderItemsEditor;
 
         // save button configuration
         Button save = new Button("Save");
@@ -76,8 +73,8 @@ public class OrderForm extends VerticalLayout {
 
 
                 // call backend to store
-                itemsList.getItemsSelected().forEach(poItem -> poItemService.save(poItem));
-                newPurchaseOrder.setItems(itemsSelector.getItemsSelected());
+                itemsList.getPOItemsSelected().forEach(poItem -> poItemService.save(poItem));
+                newPurchaseOrder.setItems(orderItemsEditor.getPOItemsSelected());
                 purchaseOrderService.save(newPurchaseOrder);
 
                 // show success notification
@@ -103,7 +100,7 @@ public class OrderForm extends VerticalLayout {
 
         // Links
         RouterLink stockList = new RouterLink("Back to stock", StockView.class);
-        RouterLink newSupplier = new RouterLink("New Supplier", SupplierForm.class);
+        RouterLink newSupplier = new RouterLink("New Supplier", SupplierCRUDView.class);
 
         Div link = new Div(stockList);
 
@@ -116,8 +113,8 @@ public class OrderForm extends VerticalLayout {
         binder.readBean(null);
 
         // clear grid
-        itemsSelector.clearGrid();
-        itemsSelector.load();
+        orderItemsEditor.clearGrid();
+        orderItemsEditor.load();
     }
 
 

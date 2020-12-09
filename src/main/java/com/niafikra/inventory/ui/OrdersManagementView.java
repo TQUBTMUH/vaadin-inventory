@@ -25,7 +25,7 @@ import com.vaadin.flow.router.RouterLink;
 import java.util.List;
 
 @Route(value = "list-orders", layout = MainView.class)
-public class ListOrders extends VerticalLayout {
+public class OrdersManagementView extends VerticalLayout {
 
     private Grid<PurchaseOrder> orders = new Grid<PurchaseOrder>();
 
@@ -35,8 +35,8 @@ public class ListOrders extends VerticalLayout {
     private PurchaseOrderProvider provider;
 
 
-    public ListOrders(PurchaseOrderService purchaseOrderService, StockService stockService,
-                      POItemService poItemService, PurchaseOrderProvider provider) {
+    public OrdersManagementView(PurchaseOrderService purchaseOrderService, StockService stockService,
+                                POItemService poItemService, PurchaseOrderProvider provider) {
         this.purchaseOrderService = purchaseOrderService;
         this.stockService = stockService;
         this.poItemService = poItemService;

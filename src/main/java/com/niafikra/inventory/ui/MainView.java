@@ -18,10 +18,10 @@ public class MainView extends AppLayout {
     private void createDrawer() {
         RouterLink stockLink = new RouterLink("Stock", StockView.class);
         RouterLink newOrderLink = new RouterLink("New Order", OrderForm.class);
-        RouterLink myOrderLink = new RouterLink("My orders", ListOrders.class);
-        RouterLink receiveLink = new RouterLink("Receive", ListOrders.class);
-        RouterLink newItemLink = new RouterLink("Items", ItemForm.class);
-        RouterLink supplierApiLink = new RouterLink("Suppliers", SupplierForm.class);
+        RouterLink myOrderLink = new RouterLink("My orders", OrdersManagementView.class);
+        RouterLink receiveLink = new RouterLink("Receive", OrdersManagementView.class);
+        RouterLink newItemLink = new RouterLink("Items", ItemCRUDView.class);
+        RouterLink supplierApiLink = new RouterLink("Suppliers", SupplierCRUDView.class);
 
         addToDrawer(new VerticalLayout(
                 stockLink, myOrderLink, newOrderLink, receiveLink, newItemLink, supplierApiLink)

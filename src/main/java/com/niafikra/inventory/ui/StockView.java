@@ -5,24 +5,15 @@ import com.niafikra.inventory.backend.entity.Stock;
 import com.niafikra.inventory.backend.service.StockService;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
-import com.vaadin.flow.component.html.Anchor;
-import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.RouterLink;
-import com.vaadin.flow.server.PWA;
-import org.springframework.beans.factory.annotation.Autowired;
 
 
 @Route(value = "", layout = MainView.class)
@@ -31,9 +22,9 @@ public class StockView extends VerticalLayout {
     private Grid<Stock> stockGrid = new Grid<Stock>();
 
     private StockService stockService;
-    private StockViewProvider provider;
+    private StocksDataProvider provider;
 
-    public StockView(StockService stockService, StockViewProvider provider) {
+    public StockView(StockService stockService, StocksDataProvider provider) {
         this.stockService = stockService;
         this.provider = provider;
 

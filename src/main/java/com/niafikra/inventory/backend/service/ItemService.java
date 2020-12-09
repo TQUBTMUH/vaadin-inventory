@@ -1,6 +1,7 @@
 package com.niafikra.inventory.backend.service;
 
 import com.niafikra.inventory.backend.entity.Item;
+import com.niafikra.inventory.backend.service.ItemServiceImp.ItemFilter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -21,4 +22,7 @@ public interface ItemService {
 
     Page<Item> findAll(String itemFilter,Pageable pageable);
 
+    Page<Item> findAll(ItemFilter itemFilter, Pageable pageable);
+
+    Long count(ItemFilter itemFilter);
 }

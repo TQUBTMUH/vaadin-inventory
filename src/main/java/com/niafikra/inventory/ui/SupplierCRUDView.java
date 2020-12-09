@@ -17,13 +17,13 @@ import org.vaadin.crudui.layout.impl.HorizontalSplitCrudLayout;
 import java.util.Collection;
 
 @Route(layout = MainView.class)
-public class SupplierForm extends VerticalLayout {
+public class SupplierCRUDView extends VerticalLayout {
 
     private SupplierService supplierService;
 
     GridCrud<Supplier> supplierGridCrud = new GridCrud<>(Supplier.class);
 
-    public SupplierForm(@Autowired SupplierService supplierService) {
+    public SupplierCRUDView(@Autowired SupplierService supplierService) {
         this.supplierService = supplierService;
 
 

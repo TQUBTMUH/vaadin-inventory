@@ -3,7 +3,6 @@ package com.niafikra.inventory.backend.service;
 import com.niafikra.inventory.backend.dao.ItemRepository;
 import com.niafikra.inventory.backend.entity.Item;
 import com.niafikra.inventory.backend.entity.Stock;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -11,8 +10,10 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+import static org.springframework.util.StringUtils.isEmpty;
+
 @Service
-public class ItemServiceImp implements ItemService{
+public class ItemServiceImp implements ItemService {
 
     private ItemRepository itemRepository;
 
@@ -75,9 +76,9 @@ public class ItemServiceImp implements ItemService{
 
     @Override
     public Long count(String itemFilter) {
-        if(itemFilter == null)
-        return itemRepository.count();
-        else itemRepository.countAllByNameStartingWith(itemFilter);
+        if (itemFilter == null)
+            return itemRepository.count();
+        else return itemRepository.countAllByNameStartingWith(itemFilter);
     }
 
     @Override
@@ -85,5 +86,51 @@ public class ItemServiceImp implements ItemService{
         return itemRepository.findAll(pageable);
     }
 
+    @Override
+    public Page<Item> findAll(ItemFilter itemFilter, Pageable pageable) {
+        if (isEmpty(itemFilter.code) && isEmpty(itemFilter.name)) {
+            return itemRepository.findAll(pageable);
+        } else if (isEmpty(itemFilter.code) && !isEmpty(itemFilter.name)) {
+            return itemRepository.findAllByName(itemFilter.getName(),pageable);
+        } else if (!isEmpty(itemFilter.code) && isEmpty(itemFilter.name)) {
+            return itemRepository.findAllByCode(itemFilter.getCode(),pageable);
+        }else {
+            return itemRepository.findAllByCodeAndName(itemFilter.getCode(),itemFilter.getName(),pageable);
+        }
+    }
+
+    @Override
+    public Long count(ItemFilter itemFilter) {
+        if (isEmpty(itemFilter.code) && isEmpty(itemFilter.name)) {
+            return itemRepository.count();
+        } else if (isEmpty(itemFilter.code) && !isEmpty(itemFilter.name)) {
+            return itemRepository.countAllByName(itemFilter.getName());
+        } else if (!isEmpty(itemFilter.code) && isEmpty(itemFilter.name)) {
+            return itemRepository.countAllByCode(itemFilter.getCode());
+        }else {
+            return itemRepository.countAllByCodeAndName(itemFilter.getCode(),itemFilter.getName());
+        }
+    }
+
+    public static class ItemFilter {
+        private String name;
+        private String code;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getCode() {
+            return code;
+        }
+
+        public void setCode(String code) {
+            this.code = code;
+        }
+    }
 }
 

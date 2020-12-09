@@ -20,16 +20,16 @@ import java.util.List;
 
 @Component
 @Scope("prototype")
-public class ItemsSelector extends HorizontalLayout implements POItemForm.OnSaveHandler {
+public class OrderItemsEditor extends HorizontalLayout implements POItemForm.OnSaveHandler {
 
     private final POItemForm poItemForm;
 
     protected Grid<POItem> poItemGrid = new Grid<POItem>();
 
     private final List<POItem> poItems = new LinkedList<>();
-    private ListDataProvider<POItem> dataProvider = new ListDataProvider<>(poItems);
+    private ListDataProvider<POItem> poItemsProvider = new ListDataProvider<>(poItems);
 
-    public ItemsSelector(@Autowired POItemForm poItemForm) {
+    public OrderItemsEditor(@Autowired POItemForm poItemForm) {
 
         // Autowired
         this.poItemForm = poItemForm;
@@ -37,7 +37,7 @@ public class ItemsSelector extends HorizontalLayout implements POItemForm.OnSave
         addClassName("items-selector");
 
         // GRID LAYOUT
-        poItemGrid.setDataProvider(dataProvider);
+        poItemGrid.setDataProvider(poItemsProvider);
         poItemGrid.addColumn(poItem -> {
             Item gridItem = poItem.getItem();
             return gridItem.getName();
@@ -66,7 +66,7 @@ public class ItemsSelector extends HorizontalLayout implements POItemForm.OnSave
     }
 
     public void load() {
-        dataProvider.refreshAll();
+        poItemsProvider.refreshAll();
     }
 
     @Override
@@ -84,7 +84,7 @@ public class ItemsSelector extends HorizontalLayout implements POItemForm.OnSave
 //        load();
     }
 
-    protected List<POItem> getItemsSelected() {
+    protected List<POItem> getPOItemsSelected() {
         return poItems;
     }
 

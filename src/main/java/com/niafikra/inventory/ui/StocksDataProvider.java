@@ -14,11 +14,11 @@ import java.util.List;
 
 @Component
 @Scope("prototype")
-public class StockViewProvider extends PageableDataProvider<Stock, Void> {
+public class StocksDataProvider extends PageableDataProvider<Stock, Void> {
 
     StockService stockService;
 
-    public StockViewProvider(StockService stockService) {
+    public StocksDataProvider(StockService stockService) {
         this.stockService = stockService;
     }
 
