@@ -1,7 +1,7 @@
 package com.niafikra.inventory.ui;
 
-import com.niafikra.inventory.backend.entity.Supplier;
-import com.niafikra.inventory.backend.service.SupplierService;
+import com.niafikra.inventory.backend.entity.Item;
+import com.niafikra.inventory.backend.service.ItemService;
 import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.data.provider.QuerySortOrder;
 import org.springframework.context.annotation.Scope;
@@ -14,17 +14,17 @@ import java.util.List;
 
 @Component
 @Scope("prototype")
-public class SupplierProvider extends PageableDataProvider<Supplier, Void> {
+public class POItemsProvider extends PageableDataProvider<Item, Void> {
 
-    private SupplierService supplierService;
+    private ItemService itemService;
 
-    public SupplierProvider(SupplierService supplierService) {
-        this.supplierService = supplierService;
+    public POItemsProvider(ItemService itemService) {
+        this.itemService = itemService;
     }
 
     @Override
-    protected Page<Supplier> fetchFromBackEnd(Query<Supplier, Void> query, Pageable pageable) {
-        return supplierService.findAll(pageable);
+    protected Page<Item> fetchFromBackEnd(Query<Item, Void> query, Pageable pageable) {
+        return itemService.findAll(pageable);
     }
 
     @Override
@@ -33,7 +33,7 @@ public class SupplierProvider extends PageableDataProvider<Supplier, Void> {
     }
 
     @Override
-    protected int sizeInBackEnd(Query<Supplier, Void> query) {
-        return supplierService.count().intValue();
+    protected int sizeInBackEnd(Query<Item, Void> query) {
+        return itemService.count().intValue();
     }
 }

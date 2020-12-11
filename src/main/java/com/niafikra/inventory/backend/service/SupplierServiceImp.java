@@ -67,8 +67,26 @@ public class SupplierServiceImp implements SupplierService {
     }
 
     @Override
+    public Page<Supplier> findAll(String nameFilter, Pageable pageable) {
+        if (nameFilter.isEmpty()) {
+            return supplierRepository.findAll(pageable);
+        } else {
+            return supplierRepository.findByNameContaining(nameFilter, pageable);
+        }
+    }
+
+    @Override
     public Long count() {
         return count();
+    }
+
+    @Override
+    public Long count(String nameFilter) {
+        if (nameFilter.isEmpty()) {
+            return  supplierRepository.count();
+        } else {
+            return supplierRepository.countAllByName(nameFilter);
+        }
     }
 }
 

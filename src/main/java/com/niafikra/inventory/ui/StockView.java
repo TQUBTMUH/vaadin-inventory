@@ -3,34 +3,49 @@ package com.niafikra.inventory.ui;
 import com.niafikra.inventory.backend.entity.Item;
 import com.niafikra.inventory.backend.entity.Stock;
 import com.niafikra.inventory.backend.service.StockService;
+import com.niafikra.inventory.backend.service.StockServiceImp;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
+import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.IntegerField;
+import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.provider.ConfigurableFilterDataProvider;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
+
+import javax.annotation.PostConstruct;
 
 
 @Route(value = "", layout = MainView.class)
 public class StockView extends VerticalLayout {
 
-    private Grid<Stock> stockGrid = new Grid<Stock>();
-
     private StockService stockService;
-    private StocksDataProvider provider;
+    private StocksDataProvider stocksDataProvider;
 
-    public StockView(StockService stockService, StocksDataProvider provider) {
+    private Grid<Stock> stockGrid = new Grid<Stock>();
+    private TextField itemNameFilter;
+    private IntegerField quantityFilter;
+
+    private StockServiceImp.StockFilter filter;
+    private ConfigurableFilterDataProvider<Stock, Void, StockServiceImp.StockFilter> filterConfigurableProvider;
+
+    public StockView(StockService stockService, StocksDataProvider stocksDataProvider) {
         this.stockService = stockService;
-        this.provider = provider;
+        this.stocksDataProvider = stocksDataProvider;
 
-        stockGrid.setDataProvider(provider);
-        configureStockGrid();
+        stockGrid.setDataProvider(stocksDataProvider);
 
+        filter = new StockServiceImp.StockFilter();
+        filterConfigurableProvider = stocksDataProvider.withConfigurableFilter();
+        filterConfigurableProvider.setFilter(filter);
         // Heading
         H3 header = new H3("STOCK LIST");
 
@@ -38,6 +53,7 @@ public class StockView extends VerticalLayout {
         updateList();
     }
 
+    @PostConstruct
     private void configureStockGrid() {
         stockGrid.addThemeVariants(GridVariant.LUMO_NO_BORDER,
                 GridVariant.LUMO_ROW_STRIPES, GridVariant.LUMO_NO_ROW_BORDERS);
@@ -45,8 +61,8 @@ public class StockView extends VerticalLayout {
         stockGrid.addColumn(stock -> {
             Item item = stock.getItem();
             return item == null ? "-" : item.getName();
-        }).setHeader("Item Name");
-        stockGrid.addColumn(Stock::getQuantity).setHeader("Quantity");
+        }).setHeader("Item Name").setKey("name");
+        stockGrid.addColumn(Stock::getQuantity).setHeader("Quantity").setKey("quantity");
 
         stockGrid.addComponentColumn(stock -> {
             Button deleteBtn = new Button(new Icon(VaadinIcon.CLOSE));
@@ -73,11 +89,53 @@ public class StockView extends VerticalLayout {
 
             return deleteBtn;
         }).setHeader("Delete");
+
+
+        // filter row
+        HeaderRow filterRow = stockGrid.appendHeaderRow();
+
+        // itemName filter
+        itemNameFilter = new TextField();
+        itemNameFilter.addValueChangeListener(event -> {
+            filter.setItem(stockService.findByItemName(event.getValue()));
+            refresh();
+        });
+        itemNameFilter.setValueChangeMode(ValueChangeMode.LAZY);
+        filterRow.getCell(stockGrid.getColumnByKey("name"))
+                .setComponent(itemNameFilter);
+        itemNameFilter.setSizeFull();
+        itemNameFilter.setPlaceholder("Filter");
+
+        // quantity filter
+        quantityFilter = new IntegerField();
+        quantityFilter.addValueChangeListener(event -> {
+            filter.setQuantity(event.getValue());
+            refresh();
+        });
+        quantityFilter.setValueChangeMode(ValueChangeMode.LAZY);
+        filterRow.getCell(stockGrid.getColumnByKey("quantity"))
+                .setComponent(quantityFilter);
+        quantityFilter.setSizeFull();
+        quantityFilter.setPlaceholder("Filter");
     }
 
     // update stock list
     private void updateList() {
-        provider.refreshAll();
+        stocksDataProvider.refreshAll();
+    }
+
+    // refresh stock list, used by filters
+    private void refresh() {
+        if (itemNameFilter.isEmpty() && quantityFilter.isEmpty()) {
+            updateList();
+        } else if (!(itemNameFilter.isEmpty()) && quantityFilter.isEmpty()) {
+            stockService.findAll(filter);
+        } else if (itemNameFilter.isEmpty() && !(quantityFilter.isEmpty())) {
+            stockService.findAll(filter);
+            // all filter fields have value
+        } else {
+            stockService.findAll(filter);
+        }
     }
 
     // Delete stock item

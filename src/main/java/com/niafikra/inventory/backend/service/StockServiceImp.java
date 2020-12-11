@@ -1,5 +1,6 @@
 package com.niafikra.inventory.backend.service;
 
+import com.niafikra.inventory.backend.dao.ItemRepository;
 import com.niafikra.inventory.backend.dao.PurchaseOrderRepository;
 import com.niafikra.inventory.backend.dao.StockRepository;
 import com.niafikra.inventory.backend.entity.Item;
@@ -13,21 +14,23 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static org.springframework.util.StringUtils.isEmpty;
+
 @Service
 public class StockServiceImp implements StockService {
 
-    StockRepository stockRepository;
-
-    PurchaseOrderRepository purchaseOrderRepository;
-
-    PurchaseOrderService purchaseOrderService;
+    private StockRepository stockRepository;
+    private PurchaseOrderRepository purchaseOrderRepository;
+    private PurchaseOrderService purchaseOrderService;
+    private ItemRepository itemRepository;
 
     public StockServiceImp(StockRepository stockRepository,
                            PurchaseOrderRepository purchaseOrderRepository,
-                           PurchaseOrderService purchaseOrderService) {
+                           PurchaseOrderService purchaseOrderService, ItemRepository itemRepository) {
         this.stockRepository = stockRepository;
         this.purchaseOrderRepository = purchaseOrderRepository;
         this.purchaseOrderService = purchaseOrderService;
+        this.itemRepository = itemRepository;
     }
 
     @Override
@@ -51,8 +54,42 @@ public class StockServiceImp implements StockService {
     }
 
     @Override
+    public Page<Stock> findAll(StockFilter filter, Pageable pageable) {
+        if (isEmpty(filter.item) && isEmpty(filter.quantity)) {
+            return stockRepository.findAll(pageable);
+        } else if (isEmpty(filter.item) && !isEmpty(filter.quantity)) {
+            return stockRepository.findByQuantityContaining((filter.getQuantity()), pageable);
+        } else if (!isEmpty(filter.item) && isEmpty(filter.quantity)) {
+            return stockRepository.findByItemContaining(filter.getItem(), pageable);
+        }else {
+            return stockRepository.findByItemAndQuantityContaining(filter.getItem(),
+                    filter.getQuantity(), pageable);
+        }
+    }
+
+    @Override
+    public List<Stock> findAll(StockFilter filter) {
+        if (isEmpty(filter.item) && isEmpty(filter.quantity)) {
+            return stockRepository.findAll();
+        } else if (isEmpty(filter.item) && !isEmpty(filter.quantity)) {
+            return stockRepository.findByQuantityContaining((filter.getQuantity()));
+        } else if (!isEmpty(filter.item) && isEmpty(filter.quantity)) {
+            return stockRepository.findByItemContaining(filter.getItem());
+        }else {
+            return stockRepository.findByItemAndQuantityContaining(filter.getItem(),
+                    filter.getQuantity());
+        }
+    }
+
+    @Override
     public Long count() {
         return stockRepository.count();
+    }
+
+    @Override
+    public Item findByItemName(String name) {
+        Item item = itemRepository.findByName(name);
+        return item;
     }
 
     @Override
@@ -93,9 +130,27 @@ public class StockServiceImp implements StockService {
                 stockRepository.save(myStock);
             }
         }
+    }
 
-//        Long foundItemId = purchaseOrderRepository.findByItemId(myPurchaserOrder.getId());
-//        Stock myStock = stockRepository.findByItem_Id(foundItemId);
+    public static class StockFilter {
+        private Item item;
+        private Integer quantity;
+
+        public Item getItem() {
+            return item;
+        }
+
+        public void setItem(Item item) {
+            this.item = item;
+        }
+
+        public Integer getQuantity() {
+            return quantity;
+        }
+
+        public void setQuantity(Integer quantity) {
+            this.quantity = quantity;
+        }
     }
 
 

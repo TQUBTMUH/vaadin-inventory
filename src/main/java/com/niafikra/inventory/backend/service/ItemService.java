@@ -12,15 +12,15 @@ public interface ItemService {
 
     Item save(Item newItem);
 
-    Item findById(Long theid);
+    Item findById(Long theId);
 
     Item update(Item newItem);
 
     void delete(Item item);
 
-    Long count(String itemFilter);
+    Long count();
 
-    Page<Item> findAll(String itemFilter,Pageable pageable);
+    Page<Item> findAll(Pageable pageable);
 
     Page<Item> findAll(ItemFilter itemFilter, Pageable pageable);
 

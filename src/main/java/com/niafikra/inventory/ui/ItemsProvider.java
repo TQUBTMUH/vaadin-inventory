@@ -28,8 +28,7 @@ public class ItemsProvider extends PageableDataProvider<Item, ItemFilter> {
 
         return itemService.findAll(
                 query.getFilter().orElse(new ItemFilter()),
-                pageable
-        );
+                pageable);
     }
 
     @Override

@@ -19,6 +19,10 @@ public interface SupplierService {
 
     Page<Supplier> findAll(Pageable pageable);
 
+    Page<Supplier> findAll(String nameFilter, Pageable pageable);
+
     Long count();
+
+    Long count(String nameFilter);
 
 }

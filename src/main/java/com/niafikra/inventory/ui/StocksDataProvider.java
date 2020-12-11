@@ -2,6 +2,7 @@ package com.niafikra.inventory.ui;
 
 import com.niafikra.inventory.backend.entity.Stock;
 import com.niafikra.inventory.backend.service.StockService;
+import com.niafikra.inventory.backend.service.StockServiceImp;
 import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.data.provider.QuerySortOrder;
 import org.springframework.context.annotation.Scope;
@@ -14,7 +15,7 @@ import java.util.List;
 
 @Component
 @Scope("prototype")
-public class StocksDataProvider extends PageableDataProvider<Stock, Void> {
+public class StocksDataProvider extends PageableDataProvider<Stock, StockServiceImp.StockFilter> {
 
     StockService stockService;
 
@@ -23,8 +24,8 @@ public class StocksDataProvider extends PageableDataProvider<Stock, Void> {
     }
 
     @Override
-    protected Page<Stock> fetchFromBackEnd(Query<Stock, Void> query, Pageable pageable) {
-        return stockService.findAll(pageable);
+    protected Page<Stock> fetchFromBackEnd(Query<Stock, StockServiceImp.StockFilter> query, Pageable pageable) {
+        return stockService.findAll(query.getFilter().orElse(new StockServiceImp.StockFilter()), pageable);
     }
 
     @Override
@@ -33,7 +34,7 @@ public class StocksDataProvider extends PageableDataProvider<Stock, Void> {
     }
 
     @Override
-    protected int sizeInBackEnd(Query<Stock, Void> query) {
+    protected int sizeInBackEnd(Query<Stock, StockServiceImp.StockFilter> query) {
         return stockService.count().intValue();
     }
 }

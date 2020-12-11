@@ -9,15 +9,15 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Long> {
 
-    public Item findByName(String itemName);
-    public Item findByCode(String code);
-    public Long countAllByNameStartingWith(String itemFilter);
+    Item findByName(String itemName);
+    Item findByCode(String code);
 
-    Page<Item> findAllByName(String name, Pageable pageable);
 
-    Page<Item> findAllByCode(String code, Pageable pageable);
+    Page<Item> findByNameContaining(String name, Pageable pageable);
 
-    Page<Item> findAllByCodeAndName(String code, String name, Pageable pageable);
+    Page<Item> findByCodeContaining(String code, Pageable pageable);
+
+    Page<Item> findByCodeAndNameContaining(String code, String name, Pageable pageable);
 
     Long countAllByCodeAndName(String code, String name);
 

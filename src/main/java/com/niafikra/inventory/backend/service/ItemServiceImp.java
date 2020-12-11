@@ -75,14 +75,12 @@ public class ItemServiceImp implements ItemService {
     }
 
     @Override
-    public Long count(String itemFilter) {
-        if (itemFilter == null)
-            return itemRepository.count();
-        else return itemRepository.countAllByNameStartingWith(itemFilter);
+    public Long count() {
+        return itemRepository.count();
     }
 
     @Override
-    public Page<Item> findAll(String itemFilter, Pageable pageable) {
+    public Page<Item> findAll(Pageable pageable) {
         return itemRepository.findAll(pageable);
     }
 
@@ -91,11 +89,12 @@ public class ItemServiceImp implements ItemService {
         if (isEmpty(itemFilter.code) && isEmpty(itemFilter.name)) {
             return itemRepository.findAll(pageable);
         } else if (isEmpty(itemFilter.code) && !isEmpty(itemFilter.name)) {
-            return itemRepository.findAllByName(itemFilter.getName(),pageable);
+            return itemRepository.findByNameContaining((itemFilter.getName()), pageable);
         } else if (!isEmpty(itemFilter.code) && isEmpty(itemFilter.name)) {
-            return itemRepository.findAllByCode(itemFilter.getCode(),pageable);
+            return itemRepository.findByCodeContaining(itemFilter.getCode(), pageable);
         }else {
-            return itemRepository.findAllByCodeAndName(itemFilter.getCode(),itemFilter.getName(),pageable);
+            return itemRepository.findByCodeAndNameContaining(itemFilter.getCode(),
+                    itemFilter.getName(), pageable);
         }
     }
 

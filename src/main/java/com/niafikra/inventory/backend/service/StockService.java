@@ -1,6 +1,8 @@
 package com.niafikra.inventory.backend.service;
 
+import com.niafikra.inventory.backend.entity.Item;
 import com.niafikra.inventory.backend.entity.Stock;
+import com.niafikra.inventory.backend.service.StockServiceImp.StockFilter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -18,5 +20,12 @@ public interface StockService {
 
     Page<Stock> findAll(Pageable pageable);
 
+    Page<Stock> findAll(StockFilter filter, Pageable pageable);
+
+    List<Stock> findAll(StockFilter filter);
+
     Long count();
+
+    // used by filter
+    Item findByItemName(String name);
 }

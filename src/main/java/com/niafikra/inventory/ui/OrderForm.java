@@ -28,7 +28,7 @@ public class OrderForm extends VerticalLayout {
     private ItemService itemService;
     private OrderItemsEditor orderItemsEditor;
     private POItemService poItemService;
-    private SupplierProvider provider;
+    private SuppliersProvider provider;
 
     // Global components and properties
     DatePicker orderDate = new DatePicker("Order Date");
@@ -39,7 +39,7 @@ public class OrderForm extends VerticalLayout {
 
     public OrderForm(SupplierService supplierService, ItemService itemService,
                      PurchaseOrderService purchaseOrderService, OrderItemsEditor orderItemsEditor,
-                     POItemService poItemService, SupplierProvider provider) {
+                     POItemService poItemService, SuppliersProvider provider) {
 
         this.supplierService = supplierService;
         this.itemService = itemService;

@@ -5,7 +5,6 @@ import com.niafikra.inventory.backend.entity.POItem;
 import com.niafikra.inventory.backend.service.ItemService;
 import com.niafikra.inventory.backend.service.POItemService;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H3;
@@ -30,19 +29,19 @@ public class POItemForm extends VerticalLayout {
     private ItemService itemService;
 
     // Fields
-    ComboBox<Item> item = new ComboBox<>();
+    Select<Item> item = new Select<>();
     IntegerField quantity = new IntegerField("Quantity");
     Button addBtn = new Button("Add Item");
 
     Binder<POItem> binder = new BeanValidationBinder<>(POItem.class);
 
     private OnSaveHandler onSaveHandler;
-    private POItemFormProvider provider;
+    private POItemsProvider poItemsProvider;
 
-    public POItemForm(ItemService itemService, POItemFormProvider provider) {
+    public POItemForm(ItemService itemService, POItemsProvider poItemsProvider) {
 
         this.itemService = itemService;
-        this.provider = provider;
+        this.poItemsProvider = poItemsProvider;
 
         binder.bindInstanceFields(this);
         // Form Fields
@@ -52,7 +51,7 @@ public class POItemForm extends VerticalLayout {
 //        List<Item> itemList = itemService.findAll();
 //        item.setItemLabelGenerator(Item::getName);
 //        item.setItems(itemList);
-        item.setDataProvider(provider);
+        item.setDataProvider(poItemsProvider);
 
         addBtn.addClickListener (add -> {
             try {
