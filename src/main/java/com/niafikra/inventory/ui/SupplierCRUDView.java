@@ -30,6 +30,7 @@ public class SupplierCRUDView extends VerticalLayout {
         this.supplierService = supplierService;
         this.suppliersProvider = suppliersProvider;
 
+        filter = new SupplierFilter();
         filterDataProvider = suppliersProvider.withConfigurableFilter();
         filterDataProvider.setFilter(filter);
     }

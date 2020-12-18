@@ -43,8 +43,6 @@ public class StockView extends VerticalLayout {
         this.stockService = stockService;
         this.stocksDataProvider = stocksDataProvider;
 
-        stockGrid.setDataProvider(stocksDataProvider);
-
         filter = new StockFilter();
         filterConfigurableProvider = stocksDataProvider.withConfigurableFilter();
         filterConfigurableProvider.setFilter(filter);
@@ -58,6 +56,8 @@ public class StockView extends VerticalLayout {
 
     @PostConstruct
     private void configureStockGrid() {
+        stockGrid.setDataProvider(stocksDataProvider);
+
         stockGrid.addThemeVariants(GridVariant.LUMO_NO_BORDER,
                 GridVariant.LUMO_ROW_STRIPES, GridVariant.LUMO_NO_ROW_BORDERS);
 
