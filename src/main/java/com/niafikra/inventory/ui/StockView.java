@@ -124,7 +124,7 @@ public class StockView extends VerticalLayout {
 
     // update stock list
     private void updateList() {
-        stocksDataProvider.refreshAll();
+        filterConfigurableProvider.refreshAll();
     }
 
     // refresh stock list, used by filters
