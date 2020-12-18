@@ -1,6 +1,7 @@
 package com.niafikra.inventory.backend.service;
 
 import com.niafikra.inventory.backend.entity.Supplier;
+import com.niafikra.inventory.backend.service.SupplierServiceImp.SupplierFilter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -19,10 +20,10 @@ public interface SupplierService {
 
     Page<Supplier> findAll(Pageable pageable);
 
-    Page<Supplier> findAll(String nameFilter, Pageable pageable);
+    Page<Supplier> findAll(SupplierFilter supplierFilter, Pageable pageable);
 
     Long count();
 
-    Long count(String nameFilter);
+    Long count(SupplierFilter supplierFilter);
 
 }

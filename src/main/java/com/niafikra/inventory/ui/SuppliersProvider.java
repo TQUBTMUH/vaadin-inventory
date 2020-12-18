@@ -2,6 +2,7 @@ package com.niafikra.inventory.ui;
 
 import com.niafikra.inventory.backend.entity.Supplier;
 import com.niafikra.inventory.backend.service.SupplierService;
+import com.niafikra.inventory.backend.service.SupplierServiceImp.SupplierFilter;
 import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.data.provider.QuerySortOrder;
 import org.springframework.context.annotation.Scope;
@@ -12,9 +13,10 @@ import org.vaadin.artur.spring.dataprovider.PageableDataProvider;
 
 import java.util.List;
 
+
 @Component
 @Scope("prototype")
-public class SuppliersProvider extends PageableDataProvider<Supplier, String> {
+public class SuppliersProvider extends PageableDataProvider<Supplier, SupplierFilter> {
 
     private SupplierService supplierService;
 
@@ -23,8 +25,8 @@ public class SuppliersProvider extends PageableDataProvider<Supplier, String> {
     }
 
     @Override
-    protected Page<Supplier> fetchFromBackEnd(Query<Supplier, String> query, Pageable pageable) {
-        return supplierService.findAll(query.getFilter().toString(), pageable);
+    protected Page<Supplier> fetchFromBackEnd(Query<Supplier, SupplierFilter> query, Pageable pageable) {
+        return supplierService.findAll(query.getFilter().orElse(new SupplierFilter()), pageable);
     }
 
     @Override
@@ -33,7 +35,7 @@ public class SuppliersProvider extends PageableDataProvider<Supplier, String> {
     }
 
     @Override
-    protected int sizeInBackEnd(Query<Supplier, String> query) {
-        return supplierService.count(query.getFilter().toString()).intValue();
+    protected int sizeInBackEnd(Query<Supplier, SupplierFilter> query) {
+        return supplierService.count(query.getFilter().orElse(new SupplierFilter())).intValue();
     }
 }

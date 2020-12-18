@@ -22,9 +22,11 @@ public interface StockService {
 
     Page<Stock> findAll(StockFilter filter, Pageable pageable);
 
-    List<Stock> findAll(StockFilter filter);
+//    List<Stock> findAll(StockFilter filter);
 
     Long count();
+
+    Long count(StockFilter stockFilter);
 
     // used by filter
     Item findByItemName(String name);

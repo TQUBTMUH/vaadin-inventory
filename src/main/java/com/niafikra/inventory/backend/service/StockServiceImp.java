@@ -61,25 +61,38 @@ public class StockServiceImp implements StockService {
             return stockRepository.findByQuantityContaining((filter.getQuantity()), pageable);
         } else if (!isEmpty(filter.item) && isEmpty(filter.quantity)) {
             return stockRepository.findByItemContaining(filter.getItem(), pageable);
-        }else {
+        } else {
             return stockRepository.findByItemAndQuantityContaining(filter.getItem(),
                     filter.getQuantity(), pageable);
         }
     }
 
     @Override
-    public List<Stock> findAll(StockFilter filter) {
-        if (isEmpty(filter.item) && isEmpty(filter.quantity)) {
-            return stockRepository.findAll();
-        } else if (isEmpty(filter.item) && !isEmpty(filter.quantity)) {
-            return stockRepository.findByQuantityContaining((filter.getQuantity()));
-        } else if (!isEmpty(filter.item) && isEmpty(filter.quantity)) {
-            return stockRepository.findByItemContaining(filter.getItem());
-        }else {
-            return stockRepository.findByItemAndQuantityContaining(filter.getItem(),
-                    filter.getQuantity());
+    public Long count(StockFilter stockFilter) {
+        if (isEmpty(stockFilter.item) && isEmpty(stockFilter.quantity)) {
+            return stockRepository.count();
+        } else if (isEmpty(stockFilter.item) && !(isEmpty(stockFilter.quantity))) {
+            return stockRepository.countAllByQuantity(stockFilter.getQuantity());
+        } else if (!isEmpty(stockFilter.item) && isEmpty(stockFilter.quantity)) {
+            return stockRepository.countAllByItem(stockFilter.getItem());
+        } else {
+            return stockRepository.countAllByItemAndQuantity(stockFilter.getItem(), stockFilter.getQuantity());
         }
     }
+
+//    @Override
+//    public List<Stock> findAll(StockFilter filter) {
+//        if (isEmpty(filter.item) && isEmpty(filter.quantity)) {
+//            return stockRepository.findAll();
+//        } else if (isEmpty(filter.item) && !isEmpty(filter.quantity)) {
+//            return stockRepository.findByQuantityContaining((filter.getQuantity()));
+//        } else if (!isEmpty(filter.item) && isEmpty(filter.quantity)) {
+//            return stockRepository.findByItemContaining(filter.getItem());
+//        }else {
+//            return stockRepository.findByItemAndQuantityContaining(filter.getItem(),
+//                    filter.getQuantity());
+//        }
+//    }
 
     @Override
     public Long count() {

@@ -2,19 +2,18 @@ package com.niafikra.inventory.ui;
 
 import com.niafikra.inventory.backend.entity.Item;
 import com.niafikra.inventory.backend.service.ItemService;
-import com.niafikra.inventory.backend.service.ItemServiceImp;
 import com.vaadin.flow.component.grid.HeaderRow;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.ConfigurableFilterDataProvider;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.crudui.crud.CrudOperation;
 import org.vaadin.crudui.crud.impl.GridCrud;
 
 import javax.annotation.PostConstruct;
+
+import static com.niafikra.inventory.backend.service.ItemServiceImp.*;
 
 @Route(layout = MainView.class)
 public class ItemCRUDView extends VerticalLayout {
@@ -22,19 +21,19 @@ public class ItemCRUDView extends VerticalLayout {
     private ItemService itemService;
 
     private ItemsProvider itemsProvider;
-    private ConfigurableFilterDataProvider<Item,Void, ItemServiceImp.ItemFilter> filterConfigurableProvider;
+    private ConfigurableFilterDataProvider<Item,Void, ItemFilter> filterConfigurableProvider;
 
     private GridCrud<Item> itemGridCrud = new GridCrud<>(Item.class);
     private TextField codeFilterField;
     private TextField nameFilterField;
 
-    private ItemServiceImp.ItemFilter filter;
+    private ItemFilter filter;
 
     public ItemCRUDView(ItemService itemService, ItemsProvider itemsProvider) {
         this.itemService = itemService;
         this.itemsProvider = itemsProvider;
 
-        filter = new ItemServiceImp.ItemFilter();
+        filter = new ItemFilter();
         filterConfigurableProvider
                 = itemsProvider.withConfigurableFilter();
         filterConfigurableProvider.setFilter(filter);
@@ -82,9 +81,9 @@ public class ItemCRUDView extends VerticalLayout {
         itemGridCrud.getCrudFormFactory().setVisibleProperties(CrudOperation.READ, "name", "code");
         itemGridCrud.getCrudFormFactory().setVisibleProperties(CrudOperation.DELETE, "name", "code");
 
-        itemGridCrud.setFindAllOperation(() -> itemService.findAll());
+//        itemGridCrud.setFindAllOperation(() -> itemService.findAll());
 
-//        itemGridCrud.setFindAllOperation(filterConfigurableProvider);
+        itemGridCrud.setFindAllOperation(filterConfigurableProvider);
         itemGridCrud.setAddOperation(item -> itemService.save(item));
         itemGridCrud.setUpdateOperation(item -> itemService.update(item));
         itemGridCrud.setDeleteOperation(item -> itemService.delete(item));

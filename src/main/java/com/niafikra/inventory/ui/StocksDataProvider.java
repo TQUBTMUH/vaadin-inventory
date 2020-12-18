@@ -13,9 +13,11 @@ import org.vaadin.artur.spring.dataprovider.PageableDataProvider;
 
 import java.util.List;
 
+import static com.niafikra.inventory.backend.service.StockServiceImp.*;
+
 @Component
 @Scope("prototype")
-public class StocksDataProvider extends PageableDataProvider<Stock, StockServiceImp.StockFilter> {
+public class StocksDataProvider extends PageableDataProvider<Stock, StockFilter> {
 
     StockService stockService;
 
@@ -24,8 +26,8 @@ public class StocksDataProvider extends PageableDataProvider<Stock, StockService
     }
 
     @Override
-    protected Page<Stock> fetchFromBackEnd(Query<Stock, StockServiceImp.StockFilter> query, Pageable pageable) {
-        return stockService.findAll(query.getFilter().orElse(new StockServiceImp.StockFilter()), pageable);
+    protected Page<Stock> fetchFromBackEnd(Query<Stock, StockFilter> query, Pageable pageable) {
+        return stockService.findAll(query.getFilter().orElse(new StockFilter()), pageable);
     }
 
     @Override
@@ -34,7 +36,7 @@ public class StocksDataProvider extends PageableDataProvider<Stock, StockService
     }
 
     @Override
-    protected int sizeInBackEnd(Query<Stock, StockServiceImp.StockFilter> query) {
-        return stockService.count().intValue();
+    protected int sizeInBackEnd(Query<Stock, StockFilter> query) {
+        return stockService.count(query.getFilter().orElse(new StockFilter())).intValue();
     }
 }

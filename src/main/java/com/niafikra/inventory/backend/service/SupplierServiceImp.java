@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+import static org.springframework.util.StringUtils.isEmpty;
+
 @Service
 public class SupplierServiceImp implements SupplierService {
 
@@ -67,11 +69,11 @@ public class SupplierServiceImp implements SupplierService {
     }
 
     @Override
-    public Page<Supplier> findAll(String nameFilter, Pageable pageable) {
-        if (nameFilter.isEmpty()) {
+    public Page<Supplier> findAll(SupplierFilter supplierFilter, Pageable pageable) {
+        if (isEmpty(supplierFilter.name)) {
             return supplierRepository.findAll(pageable);
         } else {
-            return supplierRepository.findByNameContaining(nameFilter, pageable);
+            return supplierRepository.findByNameContaining(supplierFilter.getName(), pageable);
         }
     }
 
@@ -81,11 +83,24 @@ public class SupplierServiceImp implements SupplierService {
     }
 
     @Override
-    public Long count(String nameFilter) {
-        if (nameFilter.isEmpty()) {
+    public Long count(SupplierFilter supplierFilter) {
+        if (isEmpty(supplierFilter)) {
             return  supplierRepository.count();
         } else {
-            return supplierRepository.countAllByName(nameFilter);
+            return supplierRepository.countAllByName(supplierFilter.getName());
+        }
+    }
+
+
+    public static class SupplierFilter {
+        private String name;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
         }
     }
 }

@@ -3,7 +3,7 @@ package com.niafikra.inventory.backend.entity;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "stock")
+@Table
 public class Stock {
 
     @Id

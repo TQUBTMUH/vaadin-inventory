@@ -23,6 +23,8 @@ import com.vaadin.flow.router.Route;
 
 import javax.annotation.PostConstruct;
 
+import static com.niafikra.inventory.backend.service.StockServiceImp.*;
+
 
 @Route(value = "", layout = MainView.class)
 public class StockView extends VerticalLayout {
@@ -34,8 +36,8 @@ public class StockView extends VerticalLayout {
     private TextField itemNameFilter;
     private IntegerField quantityFilter;
 
-    private StockServiceImp.StockFilter filter;
-    private ConfigurableFilterDataProvider<Stock, Void, StockServiceImp.StockFilter> filterConfigurableProvider;
+    private StockFilter filter;
+    private ConfigurableFilterDataProvider<Stock, Void, StockFilter> filterConfigurableProvider;
 
     public StockView(StockService stockService, StocksDataProvider stocksDataProvider) {
         this.stockService = stockService;
@@ -43,9 +45,10 @@ public class StockView extends VerticalLayout {
 
         stockGrid.setDataProvider(stocksDataProvider);
 
-        filter = new StockServiceImp.StockFilter();
+        filter = new StockFilter();
         filterConfigurableProvider = stocksDataProvider.withConfigurableFilter();
         filterConfigurableProvider.setFilter(filter);
+
         // Heading
         H3 header = new H3("STOCK LIST");
 
@@ -98,7 +101,7 @@ public class StockView extends VerticalLayout {
         itemNameFilter = new TextField();
         itemNameFilter.addValueChangeListener(event -> {
             filter.setItem(stockService.findByItemName(event.getValue()));
-            refresh();
+            filterConfigurableProvider.refreshAll();
         });
         itemNameFilter.setValueChangeMode(ValueChangeMode.LAZY);
         filterRow.getCell(stockGrid.getColumnByKey("name"))
@@ -110,7 +113,7 @@ public class StockView extends VerticalLayout {
         quantityFilter = new IntegerField();
         quantityFilter.addValueChangeListener(event -> {
             filter.setQuantity(event.getValue());
-            refresh();
+            filterConfigurableProvider.refreshAll();
         });
         quantityFilter.setValueChangeMode(ValueChangeMode.LAZY);
         filterRow.getCell(stockGrid.getColumnByKey("quantity"))
@@ -125,18 +128,18 @@ public class StockView extends VerticalLayout {
     }
 
     // refresh stock list, used by filters
-    private void refresh() {
-        if (itemNameFilter.isEmpty() && quantityFilter.isEmpty()) {
-            updateList();
-        } else if (!(itemNameFilter.isEmpty()) && quantityFilter.isEmpty()) {
-            stockService.findAll(filter);
-        } else if (itemNameFilter.isEmpty() && !(quantityFilter.isEmpty())) {
-            stockService.findAll(filter);
-            // all filter fields have value
-        } else {
-            stockService.findAll(filter);
-        }
-    }
+//    private void refresh() {
+//        if (itemNameFilter.isEmpty() && quantityFilter.isEmpty()) {
+//            updateList();
+//        } else if (!(itemNameFilter.isEmpty()) && quantityFilter.isEmpty()) {
+//            stockService.findAll(filter);
+//        } else if (itemNameFilter.isEmpty() && !(quantityFilter.isEmpty())) {
+//            stockService.findAll(filter);
+//            // all filter fields have value
+//        } else {
+//            stockService.findAll(filter);
+//        }
+//    }
 
     // Delete stock item
     private void deleteStock(Long theId) {

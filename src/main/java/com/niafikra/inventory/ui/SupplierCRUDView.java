@@ -2,42 +2,36 @@ package com.niafikra.inventory.ui;
 
 import com.niafikra.inventory.backend.entity.Supplier;
 import com.niafikra.inventory.backend.service.SupplierService;
+import com.niafikra.inventory.backend.service.SupplierServiceImp.SupplierFilter;
 import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.ConfigurableFilterDataProvider;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Query;
-import org.vaadin.crudui.crud.CrudListener;
 import org.vaadin.crudui.crud.CrudOperation;
 import org.vaadin.crudui.crud.impl.GridCrud;
-import org.vaadin.crudui.form.CrudFormFactory;
-import org.vaadin.crudui.layout.impl.HorizontalSplitCrudLayout;
+
 
 import javax.annotation.PostConstruct;
-import java.util.Collection;
 
 @Route(layout = MainView.class)
 public class SupplierCRUDView extends VerticalLayout {
 
     private SupplierService supplierService;
     private SuppliersProvider suppliersProvider;
-    private ConfigurableFilterDataProvider<Supplier, Void, String> filterDataProvider;
+    private ConfigurableFilterDataProvider<Supplier, Void, SupplierFilter> filterDataProvider;
 
     GridCrud<Supplier> supplierGridCrud = new GridCrud<>(Supplier.class);
     TextField nameFilterField;
-    String filterText;
+    SupplierFilter filter;
 
     public SupplierCRUDView(SupplierService supplierService, SuppliersProvider suppliersProvider) {
         this.supplierService = supplierService;
         this.suppliersProvider = suppliersProvider;
 
         filterDataProvider = suppliersProvider.withConfigurableFilter();
-        filterDataProvider.setFilter("");
+        filterDataProvider.setFilter(filter);
     }
 
     @PostConstruct
@@ -53,7 +47,7 @@ public class SupplierCRUDView extends VerticalLayout {
         // name filter
         nameFilterField = new TextField();
         nameFilterField.addValueChangeListener(event -> {
-            filterText = event.getValue();
+            filter.setName(event.getValue());
             filterDataProvider.refreshAll();
         });
         nameFilterField.setValueChangeMode(ValueChangeMode.LAZY);
@@ -69,9 +63,9 @@ public class SupplierCRUDView extends VerticalLayout {
         supplierGridCrud.getCrudFormFactory().setVisibleProperties(CrudOperation.DELETE, "name");
 
 
-        supplierGridCrud.setFindAllOperation(() -> supplierService.findAll());
+//        supplierGridCrud.setFindAllOperation(() -> supplierService.findAll());
 
-//        supplierGridCrud.setFindAllOperation(filterDataProvider);
+        supplierGridCrud.setFindAllOperation(filterDataProvider);
         supplierGridCrud.setAddOperation(item -> supplierService.save(item));
         supplierGridCrud.setUpdateOperation(item -> supplierService.update(item));
         supplierGridCrud.setDeleteOperation(item -> supplierService.delete(item));
